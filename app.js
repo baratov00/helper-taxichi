@@ -290,3 +290,77 @@ document.querySelector('#paymentProvider')?.addEventListener('change', setProvid
 document.querySelector('#paymentSettingsSave')?.addEventListener('click', savePaymentSettingsClean);
 document.querySelector('#paymentSettingsSaveTop')?.addEventListener('click', savePaymentSettingsClean);
 
+
+
+// --- Admin cabinet / manager access ---
+const SECTION_LABELS={overview:'?????',users:'????????',map:'?????',subscriptions:'????????',referrals:'????????',leaderboard:'???????',chat:'???',newsletter:'????????',partners:'????????',system:'???????',cabinet:'???????'};
+let ADMIN=null;
+titles.cabinet='???????';
+function adminSections(){return ADMIN?.sections?.length?ADMIN.sections:['overview','users','map','subscriptions','referrals','leaderboard','chat','newsletter','partners','system','cabinet']}
+function canSection(id){return ADMIN?.role==='owner'||adminSections().includes(id)}
+function firstAllowed(){return adminSections().find(x=>x!=='cabinet'||ADMIN?.role==='owner')||'overview'}
+function applyAdminPermissions(){
+  ADMIN=DATA?.admin_current||ADMIN;
+  all('.nav').forEach(btn=>{const id=btn.dataset.page;btn.hidden=!canSection(id)||(id==='cabinet'&&ADMIN?.role!=='owner')});
+  if(ADMIN?.role!=='owner') all('.owner-only').forEach(x=>x.hidden=true);
+  const active=document.querySelector('.page.active-page')?.id;
+  if(active&&!canSection(active)) page(firstAllowed());
+  wireOverviewCards();
+}
+const basePage=page;
+page=function(id){if(!canSection(id)){toast('??? ??????? ? ????? ???????');id=firstAllowed()}basePage(id);if(id==='cabinet')renderCabinet()}
+const baseRender=render;
+render=function(){baseRender();ADMIN=DATA?.admin_current||ADMIN;applyAdminPermissions();renderCabinet()}
+function setupLoginModes(){
+  const tabs=all('[data-login-mode]');
+  tabs.forEach(btn=>btn.onclick=()=>{tabs.forEach(x=>x.classList.toggle('active',x===btn));const mode=btn.dataset.loginMode;$('#passwordLoginBox').hidden=mode!=='password';$('#tokenLoginBox').hidden=mode!=='token'});
+  $('#adminPassword')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
+  $('#adminLogin')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
+}
+setupLoginModes();
+$('#loginButton').onclick=async()=>{
+  const passwordMode=!$('#passwordLoginBox')?.hidden;
+  if(passwordMode){
+    const login=$('#adminLogin').value.trim(),password=$('#adminPassword').value;
+    if(!login||!password){$('#loginError').textContent='??????? ????? ? ??????';return}
+    try{
+      const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin_login',login,password})});
+      if(!response.ok)throw new Error(response.status===401?'???????? ????? ??? ??????':'?????? ?????');
+      const data=await response.json();ADMIN=data.admin;sessionStorage.setItem('taxichi_admin_token',data.token);await load(data.token);
+    }catch(err){$('#loginError').textContent=err.message}
+  }else load($('#token').value.trim());
+};
+$('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));
+function renderCabinetSections(selected=[]){
+  const box=$('#cabinetSections'); if(!box)return;
+  box.innerHTML=Object.entries(SECTION_LABELS).filter(([id])=>id!=='cabinet').map(([id,label])=>`<label class="cabinet-check"><input type="checkbox" value="${id}" ${selected.includes(id)?'checked':''}>${label}</label>`).join('');
+}
+function resetCabinetForm(){
+  if(!$('#cabinetAdminId'))return;
+  $('#cabinetAdminId').value='';$('#cabinetEmail').value='';$('#cabinetLogin').value='';$('#cabinetPassword').value='';$('#cabinetRole').value='manager';$('#cabinetActive').checked=true;renderCabinetSections(['overview','users','subscriptions','partners','chat']);
+}
+function renderCabinet(){
+  if(!$('#cabinet'))return;
+  if(!ADMIN)ADMIN=DATA?.admin_current;
+  $('#cabinetRoleBadge')&&( $('#cabinetRoleBadge').textContent=ADMIN?.role==='owner'?'????????':'????????' );
+  renderCabinetSections(all('#cabinetSections input:checked').map(x=>x.value).length?all('#cabinetSections input:checked').map(x=>x.value):['overview','users','subscriptions','partners','chat']);
+  const users=DATA?.admin_users||[];
+  $('#cabinetCount')&&( $('#cabinetCount').textContent=`${users.length} ?????????????` );
+  if($('#cabinetUsers')) $('#cabinetUsers').innerHTML=users.map(u=>`<div class="cabinet-user ${u.active?'':'off'}"><div class="avatar">${initial(u.login)}</div><div class="grow"><b>${e(u.login)} ? ${e(u.role)}</b><span>${e(u.email)} ? ${u.active?'???????':'????????'} ? ${u.last_login_at?date(u.last_login_at):'??? ?? ??????'}</span><small>${(u.sections||[]).map(x=>SECTION_LABELS[x]||x).join(', ')}</small></div><button class="ghost" onclick='editAdminUser(${JSON.stringify(u).replace(/'/g,"&#39;")})'>????????</button>${u.id!==ADMIN?.id?`<button class="${u.active?'danger':'success'}" onclick="toggleAdminUser('${u.id}',${!u.active})">${u.active?'?????????':'????????'}</button>`:''}</div>`).join('')||empty('????????????? ???? ???');
+}
+window.editAdminUser=function(u){$('#cabinetAdminId').value=u.id;$('#cabinetEmail').value=u.email||'';$('#cabinetLogin').value=u.login||'';$('#cabinetPassword').value='';$('#cabinetRole').value=u.role||'manager';$('#cabinetActive').checked=u.active!==false;renderCabinetSections(u.sections||[]);page('cabinet')}
+async function saveAdminUser(){
+  const sections=all('#cabinetSections input:checked').map(x=>x.value);
+  await action({action:'admin_user_save',id:$('#cabinetAdminId').value,email:$('#cabinetEmail').value,login:$('#cabinetLogin').value,password:$('#cabinetPassword').value,role:$('#cabinetRole').value,active:$('#cabinetActive').checked,sections});
+  resetCabinetForm();
+}
+window.toggleAdminUser=async(id,active)=>{if(confirm(active?'???????? ??????????':'????????? ??????????'))await action({action:'admin_user_toggle',id,active})}
+$('#cabinetSave')&&($('#cabinetSave').onclick=saveAdminUser);
+$('#cabinetReset')&&($('#cabinetReset').onclick=resetCabinetForm);
+$('#cabinetMyPasswordSave')&&($('#cabinetMyPasswordSave').onclick=async()=>{const password=$('#cabinetMyPassword').value;if(password.length<6)return toast('?????? ??????? 6 ????????');await action({action:'admin_password_change',password});$('#cabinetMyPassword').value='';toast('?????? ???????')});
+resetCabinetForm();
+function wireOverviewCards(){
+  const cards=all('#metrics .metric');
+  const routes=['users','users','subscriptions','subscriptions','users','users','users','subscriptions'];
+  cards.forEach((card,i)=>{card.classList.add('clickable-metric');card.onclick=()=>page(routes[i]||'users')});
+}
