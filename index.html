@@ -18,19 +18,16 @@
   <body>
     <section id="login" class="login-page">
       <div class="login-card">
-        <div class="brand-logo">TaxiChi ? ?????</div>
-        <h1>?????????? ????</h1>
-        <p>??????? ?? ?????? ? ??????. ?????? ????????? ???? ????? ???????????? ??? ????????? ????.</p>
-        <div class="login-tabs"><button type="button" class="active" data-login-mode="password">?????</button><button type="button" data-login-mode="token">????</button></div>
+        <div class="brand-logo">TaxiChi — админ</div>
+        <h1>Вход в кабинет</h1>
+        <p>Введите логин и пароль администратора.</p>
         <div id="passwordLoginBox">
-          <label>????? ??? email<input id="adminLogin" autocomplete="username" placeholder="director" /></label>
-          <label>??????<input id="adminPassword" type="password" autocomplete="current-password" placeholder="??????? ??????" /></label>
+          <label>Логин или email<input id="adminLogin" autocomplete="username" placeholder="director" /></label>
+          <label>Пароль<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Введите пароль" /></label>
         </div>
-        <div id="tokenLoginBox" hidden>
-          <label>???? ???????<input id="token" type="password" autocomplete="current-password" placeholder="??????? ????????? ????" /></label>
-        </div>
-        <button id="loginButton" class="primary">??????? ??????</button>
-        <small class="login-hint">?????? ???? ?????????: login <b>director</b>, ?????? <b>Taxichi2026!</b>. ????? ????? ??????? ?????? ? ????????.</small>
+        <button id="loginButton" class="primary">Войти</button>
+        <button id="resetPasswordButton" type="button" class="ghost reset-password-button">Сброс пароля</button>
+        <small class="login-hint">Первый вход директора: login <b>director</b>, пароль <b>Taxichi2026!</b>. После входа смените пароль в Кабинете.</small>
         <div id="loginError" class="error"></div>
       </div>
     </section>
@@ -65,7 +62,7 @@
           ><button class="nav" data-page="system">
             <i class="material-symbols-rounded">settings</i><span>Система</span>
           </button>
-          <button class="nav owner-only" data-page="cabinet"><i class="material-symbols-rounded">admin_panel_settings</i><span>???????</span></button>
+          <button class="nav owner-only" data-page="cabinet"><i class="material-symbols-rounded">admin_panel_settings</i><span>Кабинет</span></button>
         </nav>
         <div class="aside-bottom">
           <span id="serverDot" class="dot"></span><span>Сервер работает</span
@@ -118,6 +115,11 @@
           </div>
         </section>
         <section id="users" class="page">
+          <div class="access-toolbar owner-only">
+            <div><b>Доступ приложения</b><span>Закрытие отключает только бесплатный полный доступ. Купившие Premium останутся активными.</span></div>
+            <button type="button" class="success" id="openFullAccessAll">Открыть полный доступ всем</button>
+            <button type="button" class="danger" id="closeFreeAccessAll">Закрыть бесплатный доступ</button>
+          </div>
           <div class="toolbar">
             <input
               id="userSearch"
@@ -586,36 +588,36 @@
 
         <section id="cabinet" class="page">
           <div class="cabinet-hero">
-            <div><h2>??????? ??????????????</h2><p>???????? ?????? ?????????. ????? ????? ???????? ?????????, ??????? ??????? ? ??????? ??????.</p></div>
-            <span id="cabinetRoleBadge">Owner</span>
+            <div><h2>Кабинет администратора</h2><p>Доступен только владельцу. Здесь можно добавить менеджера, выбрать разделы и сменить пароль.</p></div>
+            <span id="cabinetRoleBadge">Владелец</span>
           </div>
           <div class="grid two">
             <article class="panel">
-              <div class="panel-title"><h2>???????? / ???????? ?????????</h2><span>?????, ?????? ? ?????</span></div>
+              <div class="panel-title"><h2>Добавить / изменить менеджера</h2><span>логин, пароль и права</span></div>
               <input id="cabinetAdminId" type="hidden" />
               <div class="cabinet-form">
                 <label class="form-field">Email<input id="cabinetEmail" placeholder="manager@example.ru" /></label>
-                <label class="form-field">?????<input id="cabinetLogin" placeholder="manager" /></label>
-                <label class="form-field">????? ??????<input id="cabinetPassword" type="password" placeholder="???????? ??????, ???? ?? ??????" /></label>
-                <label class="form-field">????<select id="cabinetRole"><option value="manager">????????</option><option value="owner">????????</option></select></label>
-                <label class="check-field"><input id="cabinetActive" type="checkbox" checked /> ???????</label>
+                <label class="form-field">Логин<input id="cabinetLogin" placeholder="manager" /></label>
+                <label class="form-field">Новый пароль<input id="cabinetPassword" type="password" placeholder="оставьте пустым, если не менять" /></label>
+                <label class="form-field">Роль<select id="cabinetRole"><option value="manager">Менеджер</option><option value="owner">Владелец</option></select></label>
+                <label class="check-field"><input id="cabinetActive" type="checkbox" checked /> Активен</label>
               </div>
               <div class="cabinet-section-grid" id="cabinetSections"></div>
-              <div class="form-actions"><button class="primary" id="cabinetSave">????????? ????????????</button><button class="ghost" id="cabinetReset">????????</button></div>
+              <div class="form-actions"><button class="primary" id="cabinetSave">Сохранить пользователя</button><button class="ghost" id="cabinetReset">Очистить</button></div>
             </article>
             <article class="panel">
-              <div class="panel-title"><h2>????? ????? ??????</h2><span>??????????? ??????? ??????</span></div>
-              <label class="form-field">????? ??????<input id="cabinetMyPassword" type="password" placeholder="??????? 6 ????????" /></label>
-              <button class="primary" id="cabinetMyPasswordSave">??????? ??? ??????</button>
-              <div class="cabinet-note">???????? ?? ????? ???? ??????. ???? ????? ???????????? ??????, ????? ???????? ????? ?????? ????????? ??????.</div>
+              <div class="panel-title"><h2>Смена моего пароля</h2><span>используйте сложный пароль</span></div>
+              <label class="form-field">Новый пароль<input id="cabinetMyPassword" type="password" placeholder="минимум 6 символов" /></label>
+              <button class="primary" id="cabinetMyPasswordSave">Сменить мой пароль</button>
+              <div class="cabinet-note">Менеджер не видит этот раздел. Если нужно восстановить доступ, обратитесь к владельцу.</div>
             </article>
           </div>
           <article class="panel">
-            <div class="panel-title"><h2>???????????? ???????</h2><span id="cabinetCount">0</span></div>
+            <div class="panel-title"><h2>Пользователи админки</h2><span id="cabinetCount">0</span></div>
             <div id="cabinetUsers" class="cabinet-users"></div>
           </article>
         </section>
-      </main>
+              </main>
     </div>
     <div id="partnerPreviewModal" class="modal" hidden>
       <div class="modal-backdrop" data-close-preview></div>
@@ -638,6 +640,6 @@
     <div id="toast"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="config.js"></script>
-    <script src="app.js?v=20260715-cabinet"></script>
+    <script src="app.js?v=20260715-cabinet2"></script>
   </body>
 </html>
