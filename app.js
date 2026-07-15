@@ -419,3 +419,41 @@ async function refreshAccessStateOnly(){
 }
 setInterval(refreshAccessStateOnly,5000);
 window.addEventListener('pageshow',event=>{if(event.persisted)location.reload()});
+
+function qualityGradeClass(grade,error){
+  if(grade==='A'||error<=7)return'good';
+  if(grade==='B'||error<=12)return'ok';
+  if(grade==='C'||error<=20)return'warn';
+  return'bad';
+}
+function renderQualityPanels(){
+  const daily=DATA.prediction_quality_daily||[];
+  const models=DATA.prediction_quality_models||[];
+  const bad=DATA.prediction_quality_bad||[];
+  const dailyBox=$('#qualityDaily'),modelsBox=$('#qualityModels'),badBox=$('#qualityBad');
+  if(dailyBox)dailyBox.innerHTML=daily.length?daily.map(x=>`<div class="quality-card">
+    <div><span>${e(x.date)}</span><b>${num(x.accuracy_percent)}%</b><small>точность</small></div>
+    <i class="quality-grade ${qualityGradeClass(x.grade,x.avg_error_percent)}">${e(x.grade)}</i>
+    <em>ошибка ${num(x.avg_error_percent)}% · ${num(x.samples)} заказов</em>
+  </div>`).join(''):empty('Пока нет завершённых заказов с фактической ценой');
+  if(modelsBox)modelsBox.innerHTML=models.length?models.map(x=>`<div class="quality-row">
+    <i class="quality-grade ${qualityGradeClass(x.grade,x.avg_error_percent)}">${e(x.grade)}</i>
+    <div class="grow"><b>${e(x.model)}</b><span>ошибка ${num(x.avg_error_percent)}% · точность ${num(x.accuracy_percent)}% · ${num(x.samples)} заказов</span><small>${e(x.recommendation)}</small></div>
+  </div>`).join(''):empty('Сегментов для дообучения пока нет');
+  if(badBox)badBox.innerHTML=bad.length?bad.map(x=>`<div class="quality-row">
+    <i class="quality-grade bad">${num(x.error_percent)}%</i>
+    <div class="grow"><b>${e(x.tariff||'тариф')} · ${num(x.distance_km)} км</b><span>прогноз ${rub(x.predicted_price)} · факт ${rub(x.actual_price)}</span><small>${e(x.pickup_address||'')} · ${date(x.completed_at||x.created_at)}</small></div>
+  </div>`).join(''):empty('Сильных ошибок за 30 дней нет');
+}
+renderSystem=function(){
+  const d=DATA;
+  $('#systemMetrics').innerHTML=[
+    metric('Установок',num(d.installs),'устройств'),
+    metric('Ошибка прогноза',`${d.prediction_error_percent||0}%`,'средняя за 30 дней'),
+    metric('Точность',`${d.prediction_accuracy_percent??Math.max(0,100-(d.prediction_error_percent||0))}%`,'после завершённых заказов'),
+    metric('Сервер','Онлайн','данные обновляются')
+  ].join('');
+  renderQualityPanels();
+  renderVersions('#versions');
+  if(typeof renderSupportSettings==='function')renderSupportSettings();
+}
