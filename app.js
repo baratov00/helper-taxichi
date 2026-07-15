@@ -1,8 +1,8 @@
 ﻿const cfg=window.TAXICHI_CONFIG,$=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)];let DATA=null,MAP=null,MARKERS=[],CURRENT_DRIVER=null;
 const titles={overview:'Обзор',users:'Водители',map:'Карта водителей',subscriptions:'Подписки и выплаты',referrals:'Реферальная программа',leaderboard:'ТОП водителей',chat:'Чат водителей',newsletter:'Рассылка',partners:'Реклама и партнёры',system:'Система'};
-$('#loginButton').onclick=()=>load($('#token').value.trim());$('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));$('#logout').onclick=()=>{sessionStorage.clear();location.reload()};$('#menu').onclick=()=>$('#app').classList.toggle('menu-open');
+$('#loginButton').onclick=()=>load($('#token')?.value.trim());$('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));$('#logout').onclick=()=>{sessionStorage.clear();location.reload()};$('#menu').onclick=()=>$('#app').classList.toggle('menu-open');
 all('.nav').forEach(b=>b.onclick=()=>page(b.dataset.page));all('.link-page').forEach(b=>b.onclick=()=>page(b.dataset.target));$('#userSearch').oninput=renderUsers;$('#userCity').onchange=renderUsers;$('#subscriptionCity').onchange=()=>renderSubscriptions();
-$('#token').onkeydown=e=>{if(e.key==='Enter')$('#loginButton').click()};
+if($('#token'))$('#token').onkeydown=e=>{if(e.key==='Enter')$('#loginButton').click()};
 $('#subscriptionPeriod').onchange=()=>{if($('#subscriptionPeriod').value!=='custom'){$('#subscriptionFrom').value='';$('#subscriptionTo').value='';renderSubscriptions()}};
 $('#applySubscriptionDates').onclick=()=>renderSubscriptions(true);
 $('#partnerSave').onclick=savePartner;$('#partnerReset').onclick=resetPartnerForm;$('#partnerPreview').onclick=previewPartner;
@@ -12,8 +12,8 @@ $('#newsSend').onclick=async()=>{const title=$('#newsTitle').value.trim(),messag
 document.addEventListener('click',event=>{const driver=event.target.closest('[data-driver]');if(driver)openDriver(driver.dataset.driver);if(event.target.closest('[data-close-driver]'))$('#driverModal').hidden=true;if(event.target.closest('[data-close-preview]'))$('#partnerPreviewModal').hidden=true});
 document.addEventListener('change',event=>{if(event.target.id==='driverOrderFilter')renderDriverOrders(event.target.value)});
 function page(id){all('.page').forEach(x=>x.classList.toggle('active-page',x.id===id));all('.nav').forEach(x=>x.classList.toggle('active',x.dataset.page===id));$('#pageTitle').textContent=titles[id];$('#app').classList.remove('menu-open');if(id==='map')setTimeout(()=>{MAP?.invalidateSize();renderMap()},80);if(id==='newsletter')loadNewsHistory();if(id==='leaderboard')loadContestHistory()}
-async function request(method='GET',body){const token=sessionStorage.getItem('taxichi_admin_token')||$('#token').value.trim();const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method,headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!response.ok)throw new Error(response.status===401?'Неверный ключ администратора':'Ошибка сервера');return response.json()}
-async function load(token){if(!token)return $('#loginError').textContent='Введите секретный ключ';try{sessionStorage.setItem('taxichi_admin_token',token);DATA=await request();$('#login').hidden=true;$('#app').hidden=false;$('#updated').textContent=`Обновлено ${new Date(DATA.generated_at).toLocaleTimeString('ru-RU')}`;render()}catch(err){$('#login').hidden=false;$('#app').hidden=true;$('#loginError').textContent=err.message}}
+async function request(method='GET',body){const token=sessionStorage.getItem('taxichi_admin_token')||$('#token')?.value.trim();const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method,headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!response.ok)throw new Error(response.status===401?'Неверный логин или пароль':'Ошибка сервера');return response.json()}
+async function load(token){if(!token)return $('#loginError').textContent='Введите логин и пароль';try{sessionStorage.setItem('taxichi_admin_token',token);DATA=await request();$('#login').hidden=true;$('#app').hidden=false;$('#updated').textContent=`Обновлено ${new Date(DATA.generated_at).toLocaleTimeString('ru-RU')}`;render()}catch(err){$('#login').hidden=false;$('#app').hidden=true;$('#loginError').textContent=err.message}}
 function render(){const d=DATA;renderCityFilters();$('#metrics').innerHTML=[metric('Водителей',d.drivers_total,'Всего аккаунтов','dark'),metric('Онлайн сейчас',d.online,'активность до 2 минут','yellow'),metric('Купили Premium',d.prime_buys,`${d.active_subscriptions} активных`),metric('Выручка',rub(d.revenue_rub),'за всё время'),metric('Активны сегодня',d.active_day,'уникальных'),metric('Активны за неделю',d.active_week,'уникальных'),metric('Активны за месяц',d.active_month,'уникальных'),metric('Заявки на вывод',d.pending_withdrawals,'ожидают обработки')].join('');
 $('#activity').innerHTML=[['Сегодня',d.active_day],['7 дней',d.active_week],['30 дней',d.active_month]].map(x=>`<div><b>${num(x[1])}</b><span>${x[0]}</span></div>`).join('');$('#recentMini').innerHTML=(d.recent_users||[]).slice(0,5).map(userRow).join('')||empty('Нет пользователей');$('#topMini').innerHTML=(d.leaderboard||[]).slice(0,5).map((x,i)=>`<div class="mini-row"><div class="avatar">${i+1}</div><div class="grow"><b>${e(x.nickname)}</b><span>${x.completed_orders} заказов</span></div><div class="money">${rub(x.points)}</div></div>`).join('')||empty('Рейтинг пока пуст');renderVersions('#versionMini');renderUsers();renderSubscriptions();renderPaymentSettings();renderReferrals();renderLeaderboard();renderChat();renderPartners();renderSystem();if($('#map').classList.contains('active-page'))renderMap()}
 function metric(label,value,note,cls=''){return `<article class="metric ${cls}"><small>${label}</small><strong>${value}</strong><em>${note}</em></article>`}
@@ -290,46 +290,37 @@ document.querySelector('#paymentProvider')?.addEventListener('change', setProvid
 document.querySelector('#paymentSettingsSave')?.addEventListener('click', savePaymentSettingsClean);
 document.querySelector('#paymentSettingsSaveTop')?.addEventListener('click', savePaymentSettingsClean);
 
-
-
 // --- Admin cabinet / manager access ---
-const SECTION_LABELS={overview:'?????',users:'????????',map:'?????',subscriptions:'????????',referrals:'????????',leaderboard:'???????',chat:'???',newsletter:'????????',partners:'????????',system:'???????',cabinet:'???????'};
+const SECTION_LABELS={overview:'Обзор',users:'Водители',map:'Карта',subscriptions:'Подписки',referrals:'Рефералы',leaderboard:'Конкурс',chat:'Чат',newsletter:'Рассылка',partners:'Партнёры',system:'Система',cabinet:'Кабинет'};
 let ADMIN=null;
-titles.cabinet='???????';
+titles.cabinet='Кабинет';
 function adminSections(){return ADMIN?.sections?.length?ADMIN.sections:['overview','users','map','subscriptions','referrals','leaderboard','chat','newsletter','partners','system','cabinet']}
 function canSection(id){return ADMIN?.role==='owner'||adminSections().includes(id)}
 function firstAllowed(){return adminSections().find(x=>x!=='cabinet'||ADMIN?.role==='owner')||'overview'}
 function applyAdminPermissions(){
   ADMIN=DATA?.admin_current||ADMIN;
   all('.nav').forEach(btn=>{const id=btn.dataset.page;btn.hidden=!canSection(id)||(id==='cabinet'&&ADMIN?.role!=='owner')});
-  if(ADMIN?.role!=='owner') all('.owner-only').forEach(x=>x.hidden=true);
+  if(ADMIN?.role!=='owner') all('.owner-only').forEach(x=>x.hidden=true); else all('.owner-only').forEach(x=>x.hidden=false);
   const active=document.querySelector('.page.active-page')?.id;
   if(active&&!canSection(active)) page(firstAllowed());
   wireOverviewCards();
 }
 const basePage=page;
-page=function(id){if(!canSection(id)){toast('??? ??????? ? ????? ???????');id=firstAllowed()}basePage(id);if(id==='cabinet')renderCabinet()}
+page=function(id){if(!canSection(id)){toast('Нет доступа к этому разделу');id=firstAllowed()}basePage(id);if(id==='cabinet')renderCabinet()}
 const baseRender=render;
-render=function(){baseRender();ADMIN=DATA?.admin_current||ADMIN;applyAdminPermissions();renderCabinet()}
-function setupLoginModes(){
-  const tabs=all('[data-login-mode]');
-  tabs.forEach(btn=>btn.onclick=()=>{tabs.forEach(x=>x.classList.toggle('active',x===btn));const mode=btn.dataset.loginMode;$('#passwordLoginBox').hidden=mode!=='password';$('#tokenLoginBox').hidden=mode!=='token'});
-  $('#adminPassword')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
-  $('#adminLogin')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
-}
-setupLoginModes();
+render=function(){baseRender();ADMIN=DATA?.admin_current||ADMIN;applyAdminPermissions();renderCabinet();wireAccessButtons()}
 $('#loginButton').onclick=async()=>{
-  const passwordMode=!$('#passwordLoginBox')?.hidden;
-  if(passwordMode){
-    const login=$('#adminLogin').value.trim(),password=$('#adminPassword').value;
-    if(!login||!password){$('#loginError').textContent='??????? ????? ? ??????';return}
-    try{
-      const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin_login',login,password})});
-      if(!response.ok)throw new Error(response.status===401?'???????? ????? ??? ??????':'?????? ?????');
-      const data=await response.json();ADMIN=data.admin;sessionStorage.setItem('taxichi_admin_token',data.token);await load(data.token);
-    }catch(err){$('#loginError').textContent=err.message}
-  }else load($('#token').value.trim());
+  const login=$('#adminLogin')?.value.trim(),password=$('#adminPassword')?.value;
+  if(!login||!password){$('#loginError').textContent='Введите логин и пароль';return}
+  try{
+    const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin_login',login,password})});
+    if(!response.ok)throw new Error(response.status===401?'Неверный логин или пароль':'Ошибка входа');
+    const data=await response.json();ADMIN=data.admin;sessionStorage.setItem('taxichi_admin_token',data.token);await load(data.token);
+  }catch(err){$('#loginError').textContent=err.message}
 };
+$('#adminPassword')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
+$('#adminLogin')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
+$('#resetPasswordButton')&&($('#resetPasswordButton').onclick=()=>{$('#loginError').textContent='Для сброса пароля обратитесь к владельцу или смените пароль в Кабинете.'});
 $('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));
 function renderCabinetSections(selected=[]){
   const box=$('#cabinetSections'); if(!box)return;
@@ -342,11 +333,11 @@ function resetCabinetForm(){
 function renderCabinet(){
   if(!$('#cabinet'))return;
   if(!ADMIN)ADMIN=DATA?.admin_current;
-  $('#cabinetRoleBadge')&&( $('#cabinetRoleBadge').textContent=ADMIN?.role==='owner'?'????????':'????????' );
-  renderCabinetSections(all('#cabinetSections input:checked').map(x=>x.value).length?all('#cabinetSections input:checked').map(x=>x.value):['overview','users','subscriptions','partners','chat']);
+  $('#cabinetRoleBadge')&&( $('#cabinetRoleBadge').textContent=ADMIN?.role==='owner'?'Владелец':'Менеджер' );
+  if(!$('#cabinetSections input'))renderCabinetSections(['overview','users','subscriptions','partners','chat']);
   const users=DATA?.admin_users||[];
-  $('#cabinetCount')&&( $('#cabinetCount').textContent=`${users.length} ?????????????` );
-  if($('#cabinetUsers')) $('#cabinetUsers').innerHTML=users.map(u=>`<div class="cabinet-user ${u.active?'':'off'}"><div class="avatar">${initial(u.login)}</div><div class="grow"><b>${e(u.login)} ? ${e(u.role)}</b><span>${e(u.email)} ? ${u.active?'???????':'????????'} ? ${u.last_login_at?date(u.last_login_at):'??? ?? ??????'}</span><small>${(u.sections||[]).map(x=>SECTION_LABELS[x]||x).join(', ')}</small></div><button class="ghost" onclick='editAdminUser(${JSON.stringify(u).replace(/'/g,"&#39;")})'>????????</button>${u.id!==ADMIN?.id?`<button class="${u.active?'danger':'success'}" onclick="toggleAdminUser('${u.id}',${!u.active})">${u.active?'?????????':'????????'}</button>`:''}</div>`).join('')||empty('????????????? ???? ???');
+  $('#cabinetCount')&&( $('#cabinetCount').textContent=`${users.length} пользователей` );
+  if($('#cabinetUsers')) $('#cabinetUsers').innerHTML=users.map(u=>`<div class="cabinet-user ${u.active?'':'off'}"><div class="avatar">${initial(u.login)}</div><div class="grow"><b>${e(u.login)} · ${e(u.role)}</b><span>${e(u.email)} · ${u.active?'активен':'отключён'} · ${u.last_login_at?date(u.last_login_at):'ещё не входил'}</span><small>${(u.sections||[]).map(x=>SECTION_LABELS[x]||x).join(', ')}</small></div><button class="ghost" onclick='editAdminUser(${JSON.stringify(u).replace(/'/g,"&#39;")})'>Изменить</button>${u.id!==ADMIN?.id?`<button class="${u.active?'danger':'success'}" onclick="toggleAdminUser('${u.id}',${!u.active})">${u.active?'Отключить':'Включить'}</button>`:''}</div>`).join('')||empty('Пользователей пока нет');
 }
 window.editAdminUser=function(u){$('#cabinetAdminId').value=u.id;$('#cabinetEmail').value=u.email||'';$('#cabinetLogin').value=u.login||'';$('#cabinetPassword').value='';$('#cabinetRole').value=u.role||'manager';$('#cabinetActive').checked=u.active!==false;renderCabinetSections(u.sections||[]);page('cabinet')}
 async function saveAdminUser(){
@@ -354,13 +345,30 @@ async function saveAdminUser(){
   await action({action:'admin_user_save',id:$('#cabinetAdminId').value,email:$('#cabinetEmail').value,login:$('#cabinetLogin').value,password:$('#cabinetPassword').value,role:$('#cabinetRole').value,active:$('#cabinetActive').checked,sections});
   resetCabinetForm();
 }
-window.toggleAdminUser=async(id,active)=>{if(confirm(active?'???????? ??????????':'????????? ??????????'))await action({action:'admin_user_toggle',id,active})}
+window.toggleAdminUser=async(id,active)=>{if(confirm(active?'Включить менеджера?':'Отключить менеджера?'))await action({action:'admin_user_toggle',id,active})}
 $('#cabinetSave')&&($('#cabinetSave').onclick=saveAdminUser);
 $('#cabinetReset')&&($('#cabinetReset').onclick=resetCabinetForm);
-$('#cabinetMyPasswordSave')&&($('#cabinetMyPasswordSave').onclick=async()=>{const password=$('#cabinetMyPassword').value;if(password.length<6)return toast('?????? ??????? 6 ????????');await action({action:'admin_password_change',password});$('#cabinetMyPassword').value='';toast('?????? ???????')});
+$('#cabinetMyPasswordSave')&&($('#cabinetMyPasswordSave').onclick=async()=>{const password=$('#cabinetMyPassword').value;if(password.length<6)return toast('Пароль минимум 6 символов');await action({action:'admin_password_change',password});$('#cabinetMyPassword').value='';toast('Пароль изменён')});
 resetCabinetForm();
 function wireOverviewCards(){
   const cards=all('#metrics .metric');
   const routes=['users','users','subscriptions','subscriptions','users','users','users','subscriptions'];
   cards.forEach((card,i)=>{card.classList.add('clickable-metric');card.onclick=()=>page(routes[i]||'users')});
+}
+function paymentPayloadWithAccess(fullAccess){
+  const p=DATA?.payment_settings||{};
+  return {action:'payment_settings_save',provider:p.provider||'manual',provider_title:p.provider_title||'СБП / ручная оплата',monthly_price_rub:Number(p.monthly_price_rub||499),discount_percent:Number(p.discount_percent||20),referral_percent:Number(p.referral_percent||10),payout_mode:p.payout_mode||'manual',full_access_for_all:fullAccess,provider_api_url:p.provider_api_url||'',provider_payment_url:p.provider_payment_url||'',provider_dashboard_url:p.provider_dashboard_url||'',provider_help_url:p.provider_help_url||'',sbp_enabled:p.sbp_enabled!==false,yookassa_shop_id:p.yookassa_shop_id||'',yookassa_secret_key:'__KEEP_SECRET__',yookassa_return_url:p.yookassa_return_url||'',yookassa_webhook_url:p.yookassa_webhook_url||'',robokassa_merchant_login:p.robokassa_merchant_login||'',robokassa_password1:'__KEEP_SECRET__',robokassa_password2:'__KEEP_SECRET__',robokassa_result_url:p.robokassa_result_url||'',robokassa_success_url:p.robokassa_success_url||'',robokassa_fail_url:p.robokassa_fail_url||'',robokassa_is_test:p.robokassa_is_test!==false,active:p.active!==false};
+}
+async function setFullAccessForAll(fullAccess){
+  const text=fullAccess?'Открыть полный доступ всем пользователям?':'Закрыть бесплатный доступ? Купившие Premium останутся с доступом.';
+  if(!confirm(text))return;
+  await request('POST',paymentPayloadWithAccess(fullAccess));
+  toast(fullAccess?'Полный доступ открыт всем':'Бесплатный доступ закрыт');
+  await load(sessionStorage.getItem('taxichi_admin_token'));
+  page('users');
+}
+function wireAccessButtons(){
+  const open=$('#openFullAccessAll'),close=$('#closeFreeAccessAll');
+  if(open&&!open.dataset.ready){open.dataset.ready='1';open.onclick=()=>setFullAccessForAll(true)}
+  if(close&&!close.dataset.ready){close.dataset.ready='1';close.onclick=()=>setFullAccessForAll(false)}
 }
