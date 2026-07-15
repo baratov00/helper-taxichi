@@ -22,12 +22,11 @@
         <h1>Вход в кабинет</h1>
         <p>Введите логин и пароль администратора.</p>
         <div id="passwordLoginBox">
-          <label>Логин или email<input id="adminLogin" autocomplete="username" placeholder="director" /></label>
+          <label>Эл. почта или логин<input id="adminLogin" autocomplete="username" placeholder="director или email" /></label>
           <label>Пароль<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Введите пароль" /></label>
         </div>
         <button id="loginButton" class="primary">Войти</button>
         <button id="resetPasswordButton" type="button" class="ghost reset-password-button">Сброс пароля</button>
-        <small class="login-hint">Первый вход директора: login <b>director</b>, пароль <b>Taxichi2026!</b>. После входа смените пароль в Кабинете.</small>
         <div id="loginError" class="error"></div>
       </div>
     </section>
@@ -640,6 +639,6 @@
     <div id="toast"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="config.js"></script>
-    <script src="app.js?v=20260715-cabinet2"></script>
+    <script src="app.js?v=20260716-access-modal"></script>
   </body>
 </html>
