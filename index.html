@@ -574,6 +574,20 @@
         <section id="system" class="page">
           <div class="metrics mini" id="systemMetrics"></div>
           <article class="panel">
+            <div class="panel-title"><h2>Качество прогноза по дням</h2><span>ошибка, точность и оценка каждый день</span></div>
+            <div id="qualityDaily" class="quality-daily"></div>
+          </article>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-title"><h2>Где нужно дообучение</h2><span>тарифы и дистанции с высокой ошибкой</span></div>
+              <div id="qualityModels"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title"><h2>Последние сильные ошибки</h2><span>заказы для проверки</span></div>
+              <div id="qualityBad"></div>
+            </article>
+          </div>
+          <article class="panel">
             <div class="panel-title"><h2>Установленные версии</h2></div>
             <div id="versions"></div>
           </article>
