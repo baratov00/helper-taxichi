@@ -163,6 +163,7 @@ function ensureProviderFields(){
   const grid=document.querySelector('.payment-settings-grid');if(!grid||$('#paymentSbpEnabled'))return;
   ['paymentProviderApiUrl','paymentProviderPaymentUrl','paymentProviderDashboardUrl','paymentProviderHelpUrl'].forEach(id=>{$('#'+id)?.closest('label')?.classList.add('provider-generic')});
   grid.insertAdjacentHTML('beforeend',`
+    <label class="check-field provider-wide"><input id="paymentFullAccessForAll" type="checkbox" checked> Полный доступ всем без оплаты</label>
     <label class="check-field provider-wide provider-manual"><input id="paymentSbpEnabled" type="checkbox" checked> \u0421\u0411\u041f \u0432\u043a\u043b\u044e\u0447\u0451\u043d</label>
     <label class="form-field provider-yookassa">YooKassa shopId<input id="yookassaShopId" placeholder="shopId from YooKassa dashboard"></label>
     <label class="form-field provider-yookassa">YooKassa secret key<input id="yookassaSecretKey" type="password" placeholder="API secret key"></label>
@@ -193,7 +194,7 @@ if(typeof renderPaymentSettings==='function'&&!window.__taxichiProviderHook){
   window.__taxichiProviderHook=true;
   const oldRenderPaymentSettings=renderPaymentSettings;
   renderPaymentSettings=function(){ensureProviderFields();oldRenderPaymentSettings();const p=paymentSettings();
-    if($('#paymentSbpEnabled')){$('#paymentSbpEnabled').checked=p.sbp_enabled!==false;$('#yookassaShopId').value=p.yookassa_shop_id||'';$('#yookassaSecretKey').value=p.yookassa_secret_key||'';$('#yookassaReturnUrl').value=p.yookassa_return_url||'';$('#yookassaWebhookUrl').value=p.yookassa_webhook_url||'';$('#robokassaMerchantLogin').value=p.robokassa_merchant_login||'';$('#robokassaPassword1').value=p.robokassa_password1||'';$('#robokassaPassword2').value=p.robokassa_password2||'';$('#robokassaResultUrl').value=p.robokassa_result_url||'';$('#robokassaSuccessUrl').value=p.robokassa_success_url||'';$('#robokassaFailUrl').value=p.robokassa_fail_url||'';$('#robokassaIsTest').checked=p.robokassa_is_test!==false;renderProviderVisibility();}
+    if($('#paymentSbpEnabled')){$('#paymentFullAccessForAll').checked=p.full_access_for_all!==false;$('#paymentSbpEnabled').checked=p.sbp_enabled!==false;$('#yookassaShopId').value=p.yookassa_shop_id||'';$('#yookassaSecretKey').value=p.yookassa_secret_key||'';$('#yookassaReturnUrl').value=p.yookassa_return_url||'';$('#yookassaWebhookUrl').value=p.yookassa_webhook_url||'';$('#robokassaMerchantLogin').value=p.robokassa_merchant_login||'';$('#robokassaPassword1').value=p.robokassa_password1||'';$('#robokassaPassword2').value=p.robokassa_password2||'';$('#robokassaResultUrl').value=p.robokassa_result_url||'';$('#robokassaSuccessUrl').value=p.robokassa_success_url||'';$('#robokassaFailUrl').value=p.robokassa_fail_url||'';$('#robokassaIsTest').checked=p.robokassa_is_test!==false;renderProviderVisibility();}
   };
   savePaymentSettings=async function(){try{const payload={action:'payment_settings_save',provider:$('#paymentProvider').value,provider_title:$('#paymentProviderTitle').value.trim(),monthly_price_rub:Number($('#paymentPrice').value||499),discount_percent:Number($('#paymentDiscount').value||0),referral_percent:Number($('#paymentReferralPercent').value||10),payout_mode:$('#paymentPayoutMode').value,provider_api_url:$('#paymentProviderApiUrl')?.value||'',provider_payment_url:$('#paymentProviderPaymentUrl')?.value||'',provider_dashboard_url:$('#paymentProviderDashboardUrl')?.value||'',provider_help_url:$('#paymentProviderHelpUrl')?.value||'',sbp_enabled:$('#paymentSbpEnabled')?.checked!==false,yookassa_shop_id:$('#yookassaShopId')?.value||'',yookassa_secret_key:$('#yookassaSecretKey')?.value||'',yookassa_return_url:$('#yookassaReturnUrl')?.value||'',yookassa_webhook_url:$('#yookassaWebhookUrl')?.value||'',robokassa_merchant_login:$('#robokassaMerchantLogin')?.value||'',robokassa_password1:$('#robokassaPassword1')?.value||'',robokassa_password2:$('#robokassaPassword2')?.value||'',robokassa_result_url:$('#robokassaResultUrl')?.value||'',robokassa_success_url:$('#robokassaSuccessUrl')?.value||'',robokassa_fail_url:$('#robokassaFailUrl')?.value||'',robokassa_is_test:$('#robokassaIsTest')?.checked!==false,active:$('#paymentActive').checked};const result=await request('POST',payload);DATA.payment_settings=result.item||payload;renderPaymentSettings();toast('Payment settings saved');await load(sessionStorage.getItem('taxichi_admin_token'))}catch(err){toast(err.message)}};
   if($('#paymentSettingsSave'))$('#paymentSettingsSave').onclick=savePaymentSettings;
@@ -237,6 +238,7 @@ function renderPaymentSettingsClean(){
   set('robokassaResultUrl', p.robokassa_result_url || '');
   set('robokassaSuccessUrl', p.robokassa_success_url || '');
   set('robokassaFailUrl', p.robokassa_fail_url || '');
+  check('paymentFullAccessForAll', p.full_access_for_all);
   check('paymentSbpEnabled', p.sbp_enabled);
   check('robokassaIsTest', p.robokassa_is_test);
   check('paymentActive', p.active);
@@ -253,6 +255,7 @@ async function savePaymentSettingsClean(){
       discount_percent: Number(document.querySelector('#paymentDiscount')?.value || 0),
       referral_percent: Number(document.querySelector('#paymentReferralPercent')?.value || 10),
       payout_mode: document.querySelector('#paymentPayoutMode')?.value || 'manual',
+      full_access_for_all: document.querySelector('#paymentFullAccessForAll')?.checked === true,
       provider_api_url: '',
       provider_payment_url: document.querySelector('#paymentProviderPaymentUrl')?.value || '',
       provider_dashboard_url: '',
