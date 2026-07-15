@@ -391,6 +391,15 @@ function accessConfirm(fullAccess){
 }
 function wireAccessButtons(){
   const open=$('#openFullAccessAll'),close=$('#closeFreeAccessAll');
+  updateAccessStateCard();
   if(open&&!open.dataset.ready){open.dataset.ready='1';open.onclick=()=>setFullAccessForAll(true)}
   if(close&&!close.dataset.ready){close.dataset.ready='1';close.onclick=()=>setFullAccessForAll(false)}
+}
+function updateAccessStateCard(){
+  const card=$('#accessStateCard'); if(!card)return;
+  const opened=(DATA?.payment_settings?.full_access_for_all!==false);
+  card.className=`access-state-card ${opened?'open':'closed'}`;
+  card.innerHTML=opened
+    ? '<b>Доступ открыт</b><span>Все водители могут пользоваться без оплаты</span>'
+    : '<b>Бесплатный доступ закрыт</b><span>Работает только Premium или ручной доступ</span>';
 }
