@@ -360,12 +360,34 @@ function paymentPayloadWithAccess(fullAccess){
   return {action:'payment_settings_save',provider:p.provider||'manual',provider_title:p.provider_title||'СБП / ручная оплата',monthly_price_rub:Number(p.monthly_price_rub||499),discount_percent:Number(p.discount_percent||20),referral_percent:Number(p.referral_percent||10),payout_mode:p.payout_mode||'manual',full_access_for_all:fullAccess,provider_api_url:p.provider_api_url||'',provider_payment_url:p.provider_payment_url||'',provider_dashboard_url:p.provider_dashboard_url||'',provider_help_url:p.provider_help_url||'',sbp_enabled:p.sbp_enabled!==false,yookassa_shop_id:p.yookassa_shop_id||'',yookassa_secret_key:'__KEEP_SECRET__',yookassa_return_url:p.yookassa_return_url||'',yookassa_webhook_url:p.yookassa_webhook_url||'',robokassa_merchant_login:p.robokassa_merchant_login||'',robokassa_password1:'__KEEP_SECRET__',robokassa_password2:'__KEEP_SECRET__',robokassa_result_url:p.robokassa_result_url||'',robokassa_success_url:p.robokassa_success_url||'',robokassa_fail_url:p.robokassa_fail_url||'',robokassa_is_test:p.robokassa_is_test!==false,active:p.active!==false};
 }
 async function setFullAccessForAll(fullAccess){
-  const text=fullAccess?'Открыть полный доступ всем пользователям?':'Закрыть бесплатный доступ? Купившие Premium останутся с доступом.';
-  if(!confirm(text))return;
+  const ok = await accessConfirm(fullAccess);
+  if(!ok)return;
   await request('POST',paymentPayloadWithAccess(fullAccess));
   toast(fullAccess?'Полный доступ открыт всем':'Бесплатный доступ закрыт');
   await load(sessionStorage.getItem('taxichi_admin_token'));
   page('users');
+}
+function accessConfirm(fullAccess){
+  return new Promise(resolve=>{
+    const old=document.querySelector('#accessConfirmModal'); old?.remove();
+    const modal=document.createElement('div');
+    modal.id='accessConfirmModal';
+    modal.className='access-confirm-modal';
+    modal.innerHTML=`<div class="access-confirm-backdrop"></div><article class="access-confirm-card">
+      <div class="access-confirm-icon">${fullAccess?'✓':'!'}</div>
+      <h2>${fullAccess?'Открыть полный доступ всем?':'Закрыть бесплатный доступ?'}</h2>
+      <p>${fullAccess?'Все водители смогут пользоваться Premium-разделами без оплаты. Это удобно для теста или акции.':'Доступ закроется у всех, кто не купил Premium. У водителей с активной подпиской доступ останется.'}</p>
+      <div class="access-confirm-actions">
+        <button class="ghost" data-access-cancel>Отмена</button>
+        <button class="${fullAccess?'success':'danger'}" data-access-ok>${fullAccess?'Открыть всем':'Закрыть бесплатный'}</button>
+      </div>
+    </article>`;
+    document.body.appendChild(modal);
+    const done=value=>{modal.remove();resolve(value)};
+    modal.querySelector('[data-access-cancel]').onclick=()=>done(false);
+    modal.querySelector('.access-confirm-backdrop').onclick=()=>done(false);
+    modal.querySelector('[data-access-ok]').onclick=()=>done(true);
+  });
 }
 function wireAccessButtons(){
   const open=$('#openFullAccessAll'),close=$('#closeFreeAccessAll');
