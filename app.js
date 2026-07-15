@@ -403,3 +403,19 @@ function updateAccessStateCard(){
     ? '<b>Доступ открыт</b><span>Все водители могут пользоваться без оплаты</span>'
     : '<b>Бесплатный доступ закрыт</b><span>Работает только Premium или ручной доступ</span>';
 }
+async function refreshAccessStateOnly(){
+  const token=sessionStorage.getItem('taxichi_admin_token');
+  if(!token||document.hidden||!DATA)return;
+  try{
+    const fresh=await request();
+    DATA.payment_settings=fresh.payment_settings||DATA.payment_settings;
+    DATA.active_subscriptions=fresh.active_subscriptions;
+    DATA.prime_buys=fresh.prime_buys;
+    DATA.revenue_rub=fresh.revenue_rub;
+    DATA.pending_withdrawals=fresh.pending_withdrawals;
+    updateAccessStateCard();
+    if(document.querySelector('#overview.active-page'))render();
+  }catch(err){}
+}
+setInterval(refreshAccessStateOnly,5000);
+window.addEventListener('pageshow',event=>{if(event.persisted)location.reload()});
