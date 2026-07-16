@@ -1,3 +1,1 @@
-window.TAXICHI_CONFIG = {
-  supabaseUrl: "https://agifqvosxchnuaekirvf.supabase.co"
-};
+helper.taxichi.pro

@@ -1,16 +1,662 @@
-.partner-editor{width:min(980px,calc(100% - 36px))!important;background:#fff!important;box-shadow:0 0 0 100vmax #0007,0 30px 100px #0005!important}
-.partner-editor:before,#partners:before{display:none!important}
-#partners{background:#fff!important}
-.partner-admin-grid>.panel:first-child{background:#fff!important}
-.partner-heading-actions{display:flex;gap:10px;align-items:center}.partner-category-button{height:48px;border-radius:12px!important;background:#fff!important;border:1px solid #ddd!important;color:#111!important;font-weight:900}
-.partner-editor .panel-title{margin:-25px -25px 20px;padding:22px 72px 18px 25px;background:#fff;border-bottom:1px solid #ededed;border-radius:22px 22px 0 0;color:#111}
-.partner-editor .panel-title h2{font-size:24px;margin:0 0 5px}.partner-editor .panel-title span{display:block!important;background:none!important;color:#777!important;padding:0!important;font-size:12px}
-.partner-editor-close{z-index:2;background:#f5f5f5!important;color:#111;border:1px solid #e5e5e5!important}.partner-editor-close:hover{background:#ffc928!important;color:#111}
-.partner-editor>.form-field{background:#fff;border:1px solid #e7e7e7;border-radius:13px;padding:11px 12px;margin-bottom:10px;box-shadow:none}.partner-editor>.form-field:focus-within{border-color:#ffc928;box-shadow:0 0 0 3px #ffc92822}
-.partner-editor .form-field input,.partner-editor .form-field textarea,.partner-editor .form-field select{border:1px solid #e4e4e4!important;border-radius:9px!important;background:#fafafa!important;padding:12px!important;outline:0!important}.partner-editor .form-field input:focus,.partner-editor .form-field textarea:focus,.partner-editor .form-field select:focus{background:#fff!important;border-color:#ffc928!important;box-shadow:none}
-.partner-editor>.form-field:has(#partnerCategory),.partner-editor>.form-field:has(#partnerCity),.partner-editor>.form-field:has(#partnerAddress),.partner-editor>.form-field:has(#partnerHours),.partner-editor>.form-field:has(#partnerPrice){display:inline-grid;width:calc(50% - 7px);vertical-align:top}.partner-editor>.form-field:has(#partnerCategory),.partner-editor>.form-field:has(#partnerAddress){margin-right:10px}.partner-editor>.form-field:has(#partnerDescription) textarea{min-height:115px}
-.partner-editor>.form-field:has(#partnerImage){border:1px dashed #cfcfcf;background:#fff}.partner-editor #partnerImage::file-selector-button{border:0;border-radius:9px;background:#171717;color:#fff;padding:10px 13px;margin-right:10px;font-weight:800}.partner-editor .partner-image-list{padding:9px;border-radius:14px;background:#f7f7f7;min-height:74px}
-.partner-editor .form-grid{padding:14px;border-radius:14px;background:#fafafa;border:1px solid #ededed;gap:10px}.partner-editor .check-field{padding:13px 15px;border-radius:13px;background:#f4fbf6;color:#16733a;font-weight:900}.partner-editor .check-field input{width:19px;height:19px;accent-color:#1f9d55}.partner-editor .form-actions{position:sticky;bottom:-25px;margin:18px -25px -25px;padding:15px 25px;background:#fffffff2;border-top:1px solid #eee;backdrop-filter:blur(14px);z-index:3}.partner-editor .form-actions button{height:48px;border-radius:12px}
-.partner-editor.category-mode{width:min(760px,calc(100% - 36px))!important}.partner-editor.category-mode>.form-field,.partner-editor.category-mode>#partnerImageList,.partner-editor.category-mode>.form-grid,.partner-editor.category-mode>.check-field,.partner-editor.category-mode>.form-actions{display:none!important}.partner-editor.category-mode>.category-manager{display:block!important;background:#fff;border:0;box-shadow:none;margin:0;padding:0}.partner-editor.category-mode .category-manager .form-field,.partner-editor.category-mode .category-manager .form-grid,.partner-editor.category-mode .category-manager .check-field,.partner-editor.category-mode .category-manager .form-actions{display:grid!important}.partner-editor.category-mode .category-manager .form-actions{display:flex!important;position:static;margin:14px 0 0;padding:0;border:0;background:transparent;backdrop-filter:none}.partner-editor.category-mode .category-row{border:1px solid #eee;background:#fafafa}.partner-editor.category-mode .category-row .material-symbols-rounded{background:#111;color:#ffc928}
-.ad-preview-modal{width:min(760px,96vw)!important;background:#f5f5f3!important}.preview-carousel{background:#fff;border-radius:22px;overflow:hidden}.admin-preview-gallery{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;background:#e9e9e7}.admin-preview-gallery figure{position:relative;min-width:100%;aspect-ratio:1/1;height:auto;margin:0;scroll-snap-align:start}.admin-preview-gallery img{width:100%;height:100%;object-fit:cover}.admin-preview-gallery small{position:absolute;left:14px;bottom:14px;background:#111;color:#fff;border-radius:8px;padding:6px 9px}.admin-preview-content{padding:22px}.admin-preview-category{display:inline-block;background:#fff1c6;color:#8a6200;border-radius:20px;padding:7px 11px;font-size:11px;font-weight:900}.admin-preview-title{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:12px 0}.admin-preview-title h2{font-size:27px;margin:0}.admin-preview-title strong{font-size:18px;white-space:nowrap}.admin-preview-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}.admin-preview-meta p{display:grid;gap:4px;background:#f6f6f4;border-radius:13px;padding:12px;margin:0}.admin-preview-meta span{font-size:12px;color:#555}.admin-preview-content section{margin:18px 0}.admin-preview-content section>p{color:#444;line-height:1.55}.admin-preview-map{display:flex;align-items:center;gap:12px;border-radius:16px;padding:16px;background:linear-gradient(135deg,#eeece3,#faf8ef)}.admin-preview-map>span{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#ffc928}.admin-preview-map div{display:grid;gap:3px}.admin-preview-map small{color:#666}.admin-preview-contacts{display:flex;gap:9px;margin-top:17px}.admin-preview-contacts button{border:0;border-radius:12px;padding:13px 17px;font-weight:900}.admin-preview-contacts .call{background:#ffc928}.admin-preview-contacts .wa{background:#25d366;color:#fff}.admin-preview-contacts .max{background:#2878ff;color:#fff}
-@media(max-width:620px){.partner-editor{width:calc(100% - 18px)!important}.partner-heading-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.partner-editor>.form-field:has(#partnerCategory),.partner-editor>.form-field:has(#partnerCity),.partner-editor>.form-field:has(#partnerAddress),.partner-editor>.form-field:has(#partnerHours),.partner-editor>.form-field:has(#partnerPrice){display:grid;width:100%;margin-right:0}.partner-editor .form-grid,.admin-preview-meta{grid-template-columns:1fr}.admin-preview-gallery figure{height:230px}.admin-preview-title{display:block}.admin-preview-title strong{display:block;margin-top:7px}.admin-preview-contacts{flex-wrap:wrap}}
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>TaxiChi — админ</title>
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="admin-enhancements.css?v=20260713-polish" />
+    <link rel="stylesheet" href="partner-editor.css?v=20260712d" />
+    <link rel="stylesheet" href="contest-ui.css?v=20260704-2" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,500,0,0" />
+  </head>
+  <body>
+    <section id="login" class="login-page">
+      <div class="login-card">
+        <div class="brand-logo">TaxiChi — админ</div>
+        <h1>Вход в кабинет</h1>
+        <p>Введите логин и пароль администратора.</p>
+        <div id="passwordLoginBox">
+          <label>Эл. почта или логин<input id="adminLogin" autocomplete="username" placeholder="director или email" /></label>
+          <label>Пароль<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Введите пароль" /></label>
+        </div>
+        <button id="loginButton" class="primary">Войти</button>
+        <button id="resetPasswordButton" type="button" class="ghost reset-password-button">Сброс пароля</button>
+        <div id="loginError" class="error"></div>
+      </div>
+    </section>
+    <div id="app" class="app" hidden>
+      <aside>
+        <div class="aside-brand">
+          <div class="brand-mark"><img src="taxichi-logo.png" alt="TaxiChi" /></div>
+          <div class="brand-copy">
+            <b>TaxiChi</b>
+            <span>Админ</span>
+            <small>Умный помощник для водителя</small>
+          </div>
+        </div>
+        <nav>
+          <button class="nav active" data-page="overview">
+            <i class="material-symbols-rounded">dashboard</i><span>Обзор</span></button
+          ><button class="nav" data-page="users">
+            <i class="material-symbols-rounded">group</i><span>Водители</span></button
+          ><button class="nav" data-page="map">
+            <i class="material-symbols-rounded">map</i><span>Карта</span></button
+          ><button class="nav" data-page="subscriptions">
+            <i class="material-symbols-rounded">payments</i><span>Подписки</span></button
+          ><button class="nav" data-page="referrals">
+            <i class="material-symbols-rounded">share</i><span>Рефералы</span></button
+          ><button class="nav" data-page="leaderboard">
+            <i class="material-symbols-rounded">emoji_events</i><span>Конкурс</span></button
+          ><button class="nav" data-page="chat"><i class="material-symbols-rounded">forum</i><span>Чат</span></button
+          ><button class="nav" data-page="newsletter">
+            <i class="material-symbols-rounded">campaign</i><span>Рассылка</span></button
+          ><button class="nav" data-page="partners">
+            <i class="material-symbols-rounded">ads_click</i><span>Реклама</span></button
+          ><button class="nav" data-page="system">
+            <i class="material-symbols-rounded">settings</i><span>Система</span>
+          </button>
+          <button class="nav owner-only" data-page="cabinet"><i class="material-symbols-rounded">admin_panel_settings</i><span>Кабинет</span></button>
+        </nav>
+        <div class="aside-bottom">
+          <span id="serverDot" class="dot"></span><span>Сервер работает</span
+          ><button id="logout">Выйти</button>
+        </div>
+      </aside>
+      <main>
+        <header>
+          <div>
+            <button id="menu">☰</button>
+            <h1 id="pageTitle">Обзор</h1>
+            <p id="updated">Загрузка данных…</p>
+          </div>
+          <button id="refresh" class="refresh">↻ Обновить</button>
+        </header>
+        <section id="overview" class="page active-page">
+          <div class="metrics" id="metrics"></div>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-title">
+                <h2>Активность</h2>
+                <span>уникальные пользователи</span>
+              </div>
+              <div id="activity" class="activity"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title">
+                <h2>Недавно активные</h2>
+                <button class="link-page" data-target="users">
+                  Все водители →
+                </button>
+              </div>
+              <div id="recentMini"></div>
+            </article>
+          </div>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-title">
+                <h2>ТОП месяца</h2>
+                <button class="link-page" data-target="leaderboard">
+                  Весь рейтинг →
+                </button>
+              </div>
+              <div id="topMini"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title"><h2>Версии приложения</h2></div>
+              <div id="versionMini"></div>
+            </article>
+          </div>
+        </section>
+        <section id="users" class="page">
+          <div class="access-toolbar owner-only">
+            <div><b>Доступ приложения</b><span>Закрытие отключает только бесплатный полный доступ. Купившие Premium останутся активными.</span></div>
+            <div id="accessStateCard" class="access-state-card">Проверка доступа…</div>
+            <button type="button" class="success" id="openFullAccessAll">Открыть полный доступ всем</button>
+            <button type="button" class="danger" id="closeFreeAccessAll">Закрыть бесплатный доступ</button>
+          </div>
+          <div class="toolbar">
+            <input
+              id="userSearch"
+              placeholder="Поиск по имени, e-mail или ID"
+            /><select id="userCity">
+              <option value="">Все города</option></select
+            ><span id="usersCount"></span>
+          </div>
+          <article class="panel table-panel">
+            <table>
+              <thead>
+                <tr>
+                  <th>Водитель</th>
+                  <th>Город</th>
+                  <th>Подписка</th>
+                  <th>Рефералы</th>
+                  <th>Регистрация</th>
+                  <th>Последняя активность</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable"></tbody>
+            </table>
+          </article>
+        </section>
+        <section id="map" class="page">
+          <div class="map-summary">
+            <b><span id="mapCount">0</span> водителей онлайн на карте</b
+            ><span>Только активные за последние 2 минуты</span>
+          </div>
+          <div id="driversMap"></div>
+        </section>
+        <section id="subscriptions" class="page">
+          <div class="subscription-studio">
+            <article class="panel subscription-hero">
+              <div>
+                <span class="eyebrow">ПОДПИСКИ И ОПЛАТА</span>
+                <h2>Premium TaxiChi</h2>
+                <p>Настройте цену, скидку, реферальный процент и способ оплаты. Изменения сразу уйдут в приложение.</p>
+              </div>
+              <div class="subscription-hero-actions">
+                <button id="paymentSettingsSaveTop" class="primary">Сохранить настройки</button>
+              </div>
+            </article>
+
+            <div class="metrics mini" id="subscriptionMetrics"></div>
+
+            <article class="panel payment-settings-panel">
+              <div class="panel-title">
+                <h2>Настройки Premium</h2>
+                <span id="paymentSettingsState">Выберите провайдера оплаты</span>
+              </div>
+
+              <div class="payment-settings-grid subscription-clean-grid">
+                <label class="form-field">Провайдер оплаты
+                  <select id="paymentProvider">
+                    <option value="manual">СБП / ручная оплата</option>
+                    <option value="yookassa">YooKassa</option>
+                    <option value="robokassa">Robokassa</option>
+                  </select>
+                </label>
+                <label class="form-field">Название в приложении
+                  <input id="paymentProviderTitle" maxlength="120" placeholder="Например: СБП / YooKassa" />
+                </label>
+                <label class="form-field">Цена Premium, ₽ / месяц
+                  <input id="paymentPrice" inputmode="numeric" placeholder="499" />
+                </label>
+                <label class="form-field">Скидка по промокоду, %
+                  <input id="paymentDiscount" inputmode="numeric" placeholder="20" />
+                </label>
+                <label class="form-field">Реферальный процент, %
+                  <input id="paymentReferralPercent" inputmode="numeric" placeholder="10" />
+                </label>
+                <label class="form-field">Вывод рефералов
+                  <select id="paymentPayoutMode">
+                    <option value="manual">Ручное подтверждение</option>
+                    <option value="auto">Автоматически через провайдера</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="provider-box provider-manual">
+                <h3>СБП / ручная оплата</h3>
+                <p>Используйте этот режим, если оплата подтверждается вручную или через внешнюю СБП-ссылку.</p>
+                <label class="check-field"><input id="paymentSbpEnabled" type="checkbox" checked /> СБП включён</label>
+                <label class="form-field">Ссылка оплаты / checkout
+                  <input id="paymentProviderPaymentUrl" placeholder="https://pay.example.ru/..." />
+                </label>
+              </div>
+
+              <div class="provider-box provider-yookassa" hidden>
+                <h3>YooKassa</h3>
+                <p>Эти данные нужны серверу TaxiChi для создания платежа и проверки подписки.</p>
+                <div class="payment-settings-grid">
+                  <label class="form-field">shopId
+                    <input id="yookassaShopId" placeholder="shopId из кабинета YooKassa" />
+                  </label>
+                  <label class="form-field">secret key
+                    <input id="yookassaSecretKey" type="password" placeholder="Секретный ключ API" />
+                  </label>
+                  <label class="form-field">return_url
+                    <input id="yookassaReturnUrl" placeholder="https://helper.taxichi.pro/pay/success" />
+                  </label>
+                  <label class="form-field">webhook URL
+                    <input id="yookassaWebhookUrl" placeholder="https://.../functions/v1/payment-webhook" />
+                  </label>
+                </div>
+              </div>
+
+              <div class="provider-box provider-robokassa" hidden>
+                <h3>Robokassa</h3>
+                <p>Заполните данные магазина и URL-адреса для проверки платежей.</p>
+                <div class="payment-settings-grid">
+                  <label class="form-field">MerchantLogin
+                    <input id="robokassaMerchantLogin" placeholder="MerchantLogin" />
+                  </label>
+                  <label class="form-field">Password #1
+                    <input id="robokassaPassword1" type="password" />
+                  </label>
+                  <label class="form-field">Password #2
+                    <input id="robokassaPassword2" type="password" />
+                  </label>
+                  <label class="form-field">ResultURL
+                    <input id="robokassaResultUrl" placeholder="https://.../functions/v1/payment-webhook" />
+                  </label>
+                  <label class="form-field">SuccessURL
+                    <input id="robokassaSuccessUrl" placeholder="https://helper.taxichi.pro/pay/success" />
+                  </label>
+                  <label class="form-field">FailURL
+                    <input id="robokassaFailUrl" placeholder="https://helper.taxichi.pro/pay/fail" />
+                  </label>
+                </div>
+                <label class="check-field"><input id="robokassaIsTest" type="checkbox" checked /> Тестовый режим Robokassa</label>
+              </div>
+
+              <label class="check-field payment-active-field"><input id="paymentActive" type="checkbox" checked /> Оплата активна</label>
+              <input id="paymentProviderApiUrl" type="hidden" />
+              <input id="paymentProviderDashboardUrl" type="hidden" />
+              <input id="paymentProviderHelpUrl" type="hidden" />
+              <div class="form-actions">
+                <button id="paymentSettingsSave" class="primary">Сохранить настройки</button>
+              </div>
+            </article>
+
+            <article class="panel subscription-filter-panel">
+              <div class="panel-title">
+                <h2>Покупки Premium</h2>
+                <span id="subscriptionPeriodLabel"></span>
+              </div>
+              <div class="date-filter">
+                <select id="subscriptionCity">
+                  <option value="">Все города</option>
+                </select>
+                <select id="subscriptionPeriod">
+                  <option value="0">Сегодня</option>
+                  <option value="1">Вчера</option>
+                  <option value="3">Последние 3 дня</option>
+                  <option value="10">Последние 10 дней</option>
+                  <option value="30">Последний месяц</option>
+                  <option value="all">Всё время</option>
+                </select>
+                <label>С <input id="subscriptionFrom" type="date" /></label>
+                <label>По <input id="subscriptionTo" type="date" /></label>
+                <button id="applySubscriptionDates">Показать</button>
+              </div>
+              <div id="subscriptionPurchases"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-title">
+                <h2>Заявки на вывод рефералов</h2>
+                <span>ручное подтверждение выплаты</span>
+              </div>
+              <div id="withdrawals"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="referrals" class="page">
+          <article class="panel table-panel">
+            <div class="panel-title">
+              <h2>Рейтинг рефералов</h2>
+              <span>кто пригласил больше активных водителей</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Место</th>
+                  <th>Водитель</th>
+                  <th>Всего</th>
+                  <th>Активных</th>
+                </tr>
+              </thead>
+              <tbody id="referralsTable"></tbody>
+            </table>
+          </article>
+        </section>
+        <section id="leaderboard" class="page">
+          <div class="contest-studio">
+            <article class="panel contest-editor">
+              <div class="contest-editor-head">
+                <div>
+                  <span class="eyebrow">УПРАВЛЕНИЕ КОНКУРСОМ</span>
+                  <h2>Кубок водителей</h2>
+                  <p>Все изменения автоматически появятся в приложении</p>
+                </div>
+                <div id="contestSaveState" class="save-state">● Сохранено</div>
+              </div>
+              <label class="form-field featured-field"
+                >Название конкурса<input
+                  id="contestTitle"
+                  placeholder="Кубок TaxiChi"
+              /></label>
+              <div class="date-pair">
+                <label class="form-field"
+                  >Старт<input id="contestStart" type="datetime-local" /></label
+                ><label class="form-field"
+                  >Финиш<input id="contestEnd" type="datetime-local"
+                /></label>
+              </div>
+              <div class="contest-scope">
+                <label class="form-field contest-city-field"><span>Город конкурса</span><select id="contestCity"><option value="">Все города</option><option value="moscow">Москва</option><option value="spb">Санкт-Петербург</option><option value="ekb">Екатеринбург</option><option value="samara">Самара</option></select></label>
+                <div><b>Тарифы конкурса</b><div class="tariff-checks">
+                  <label><input type="checkbox" value="economy" class="contestTariff"> Эконом</label><label><input type="checkbox" value="comfort" class="contestTariff"> Комфорт</label><label><input type="checkbox" value="comfort_plus" class="contestTariff"> Комфорт+</label><label><input type="checkbox" value="business" class="contestTariff"> Бизнес</label><label><input type="checkbox" value="premier" class="contestTariff"> Премьер</label><label><input type="checkbox" value="elite" class="contestTariff"> Элит</label><label><input type="checkbox" value="child" class="contestTariff"> Детский</label><label><input type="checkbox" value="minivan" class="contestTariff"> Минивэн</label><label><input type="checkbox" value="delivery" class="contestTariff"> Доставка</label><label><input type="checkbox" value="cruise" class="contestTariff"> Круиз</label>
+                </div></div>
+              </div>
+              <div class="prize-fields">
+                <label class="prize-input gold"
+                  ><b>🥇 1 место</b
+                  ><input
+                    id="contestPrize1"
+                    placeholder="3 000 ₽ или приз" /></label
+                ><label class="prize-input silver"
+                  ><b>🥈 2 место</b
+                  ><input id="contestPrize2" placeholder="2 000 ₽" /></label
+                ><label class="prize-input bronze"
+                  ><b>🥉 3 место</b
+                  ><input id="contestPrize3" placeholder="1 000 ₽"
+                /></label>
+              </div>
+              <div class="contest-actions">
+                <label class="contest-toggle"
+                  ><input id="contestActive" type="checkbox" checked /><i></i
+                  ><span>Конкурс активен</span></label
+                ><button id="contestSave" class="primary">
+                  Сохранить сейчас
+                </button>
+              </div>
+            </article>
+            <article class="contest-live">
+              <div class="live-badge">● LIVE PREVIEW</div>
+              <h3 id="contestPreviewTitle">Кубок TaxiChi</h3>
+              <p id="contestPreviewDate">Укажите дату завершения</p>
+              <div id="contestPrizePreview" class="prize-preview"></div>
+            </article>
+          </div>
+          <div class="leaderboard-heading">
+            <div>
+              <span class="eyebrow">ТЕКУЩИЕ РЕЗУЛЬТАТЫ</span>
+              <h2>ТОП водителей</h2>
+            </div>
+            <span>Обновляется по завершённым заказам</span>
+          </div>
+          <div id="podium" class="podium"></div>
+          <article class="panel table-panel leaderboard-table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Место</th>
+                  <th>Водитель</th>
+                  <th>Заработок</th>
+                  <th>Заказы</th>
+                  <th>Обновлено</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardTable"></tbody>
+            </table>
+          </article>
+          <article class="panel contest-history-panel"><div class="panel-title"><h2>История конкурсов</h2><button class="ghost" onclick="loadContestHistory()">Обновить</button></div><div id="contestHistory"></div></article>
+        </section>
+        <section id="chat" class="page">
+          <div class="chat-layout">
+            <article class="panel chat-panel">
+              <div class="panel-title">
+                <h2>Сообщения за 24 часа</h2>
+                <span id="chatCount"></span>
+              </div>
+              <div id="chatMessages"></div>
+            </article>
+            <article class="panel chat-panel">
+              <div class="panel-title">
+                <h2>&#1046;&#1072;&#1083;&#1086;&#1073;&#1099; &#1085;&#1072; &#1089;&#1086;&#1086;&#1073;&#1097;&#1077;&#1085;&#1080;&#1103;</h2>
+                <span id="chatReportsCount"></span>
+              </div>
+              <div id="chatReports"></div>
+            </article>
+          </div>
+        </section>
+        <section id="newsletter" class="page">
+          <article class="panel newsletter-card">
+            <div class="panel-title">
+              <h2>Новая рассылка</h2>
+              <span>сообщение появится в «Новостях»</span>
+            </div>
+            <label class="form-field"
+              >Заголовок<input
+                id="newsTitle"
+                maxlength="120"
+                placeholder="Важная новость" /></label
+            ><label class="form-field"
+              >Сообщение<textarea
+                id="newsMessage"
+                rows="8"
+                maxlength="3000"
+                placeholder="Напишите сообщение водителям"
+              ></textarea></label
+            ><label class="form-field"
+              >Город<select id="newsCity">
+                <option value="">Все города</option>
+                <option value="moscow">Москва</option>
+                <option value="spb">Санкт-Петербург</option>
+                <option value="ekb">Екатеринбург</option>
+                <option value="samara">Самара</option>
+              </select></label
+            ><button id="newsSend" class="primary">Опубликовать новость</button>
+            <p class="muted-note">
+              Новость появится в приложении. Системное push-уведомление будет
+              доступно после подключения серверного ключа Firebase.
+            </p>
+          </article>
+          <article class="panel news-history-panel"><div class="panel-title"><h2>История рассылок</h2><span>Можно удалить старую публикацию</span></div><div id="newsHistory"></div></article>
+        </section>
+        <section id="partners" class="page">
+          <div class="partners-admin-heading"><div><h1>Партнёры</h1><p>Управление предложениями партнёров</p></div><div class="partner-heading-actions"><button type="button" class="ghost partner-category-button" id="partnerCategories">Категории</button><button type="button" class="primary partner-add-button" id="partnerAdd">＋ Добавить партнёра</button></div></div>
+          <div class="partner-summary"><div><b id="partnerTotal">0</b><span>Всего объявлений</span></div><div class="active"><b id="partnerActiveCount">0</b><span>Активных</span></div><div><b id="partnerInactiveCount">0</b><span>Неактивных</span></div></div>
+          <div class="partner-toolbar"><input id="partnerSearch" placeholder="⌕  Поиск по названию партнёра..."><select id="partnerCategoryFilter"><option value="">Все категории</option></select><select id="partnerStatusFilter"><option value="">Все статусы</option><option value="active">Активные</option><option value="inactive">Неактивные</option></select></div>
+          <div class="partner-admin-grid">
+            <article class="panel partner-editor" id="partnerEditor" hidden>
+              <button type="button" class="partner-editor-close" id="partnerEditorClose">×</button>
+              <div class="panel-title">
+                <h2>Объявление партнёра</h2>
+                <span>обязательны только категория и название</span>
+              </div>
+              <input id="partnerId" type="hidden" />
+              <label class="form-field">Категория объявления *<select id="partnerCategory" required></select></label>
+              <div class="category-manager">
+                <div class="category-manager-head">
+                  <b>Разделы каталога</b>
+                  <button type="button" class="ghost" id="categoryNew">+ раздел</button>
+                </div>
+                <div id="categoryList"></div>
+                <input id="categoryId" type="hidden" />
+                <div class="form-grid">
+                  <label class="form-field">Название раздела<input id="categoryTitle" placeholder="Аренда авто" /></label>
+                  <label class="form-field">Иконка<select id="categoryIcon">
+                    <option value="directions_car">🚕 Авто</option>
+                    <option value="car_rental">🔑 Выкуп</option>
+                    <option value="build">🔧 Сервис</option>
+                    <option value="local_taxi">🏢 Парк</option>
+                    <option value="badge">🪪 Лицензия</option>
+                    <option value="handyman">🧰 Услуги</option>
+                    <option value="local_offer">🏷️ Другое</option>
+                  </select></label>
+                </div>
+                <div class="form-grid">
+                  <label class="form-field">Порядок<input id="categoryOrder" type="number" min="1" max="99" value="1" /></label>
+                  <label class="check-field"><input id="categoryActive" type="checkbox" checked /> Активный раздел</label>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="primary" id="categorySave">Сохранить раздел</button>
+                  <button type="button" class="ghost" id="categoryReset">Очистить</button>
+                </div>
+              </div>
+              <label class="form-field">Город рекламы<select id="partnerCity"><option value="">Все города</option><option value="moscow">Москва</option><option value="spb">Санкт-Петербург</option><option value="ekb">Екатеринбург</option><option value="samara">Самара</option></select></label>
+              <label class="form-field">Тариф машины<select id="partnerTariff"><option value="">Без тарифа / не машина</option><option value="economy">Эконом</option><option value="comfort">Комфорт</option><option value="comfort_plus">Комфорт+</option><option value="business">Бизнес</option><option value="premier">Премьер</option><option value="elite">Элит</option><option value="cruise">Круиз</option><option value="minivan">Минивэн</option><option value="delivery">Доставка</option></select></label><label class="form-field"
+                >Название *<input
+                  id="partnerTitle"
+                  maxlength="100"
+                  placeholder="Таксопарк B‑Taxi" /></label
+              ><label class="form-field"
+                >Подзаголовок<input
+                  id="partnerSubtitle"
+                  maxlength="160"
+                  placeholder="Подключаем к Яндекс Такси" /></label
+              ><label class="form-field"
+                >Описание<textarea
+                  id="partnerDescription"
+                  rows="5"
+                  placeholder="Каждый пункт с новой строки"
+                ></textarea></label
+              ><label class="form-field"
+                >Адрес<input id="partnerAddress" maxlength="300" placeholder="Москва, Варшавское шоссе, 170Г" /></label
+              ><label class="form-field"
+                >Метро / район<input id="partnerMetro" maxlength="160" placeholder="Аннино · 5 мин от метро" /></label
+              ><label class="form-field"
+                >График работы<input id="partnerHours" maxlength="160" placeholder="пн-сб с 09:00 до 18:00" /></label
+              ><label class="form-field"
+                >Цена / скидка<input id="partnerPrice" maxlength="120" placeholder="от 1 500 ₽/сутки или Скидка 15%" /></label
+              ><label class="form-field"
+                >Фотографии для карусели (до 8)<input
+                  id="partnerImage"
+                  type="file"
+                  multiple
+                  accept="image/jpeg,image/png,image/webp" /><input
+                  id="partnerImageUrl"
+                  placeholder="или ссылки на изображения, каждая с новой строки"
+              /></label>
+              <div id="partnerImageList" class="partner-image-list"></div>
+              <div class="form-grid">
+                <label class="form-field"
+                  >Вызов<input
+                    id="partnerPhone"
+                    placeholder="tel:+79032944064" /></label
+                ><label class="form-field"
+                  >WhatsApp<input
+                    id="partnerWhatsapp"
+                    placeholder="https://wa.me/79032944064" /></label
+                ><label class="form-field"
+                  >MAX<input id="partnerMax" placeholder="ссылка MAX" /></label
+                ><label class="form-field"
+                  >Место объявления<input
+                    id="partnerOrder"
+                    type="number"
+                    min="1"
+                    max="10"
+                    value="1"
+                /></label>
+              </div>
+              <label class="check-field"
+                ><input id="partnerActive" type="checkbox" checked /> Показывать
+                в приложении</label
+              >
+              <div class="form-actions">
+                <button id="partnerPreview" class="ghost">Предпросмотр</button
+                ><button id="partnerSave" class="primary">
+                  Сохранить карточку</button
+                ><button id="partnerReset" class="ghost">Очистить</button>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-title">
+                <h2>Список партнёров</h2>
+                <span id="partnerCount">0/10</span>
+              </div>
+              <div class="partner-table-head"><span>Партнёр</span><span>Категория</span><span>Статус</span><span>Цена</span><span>Действия</span></div>
+              <div id="partnerCards"></div>
+            </article>
+          </div>
+        </section>
+        <section id="system" class="page">
+          <div class="metrics mini" id="systemMetrics"></div>
+          <article class="panel">
+            <div class="panel-title"><h2>Качество прогноза по дням</h2><span>ошибка, точность и оценка каждый день</span></div>
+            <div id="qualityDaily" class="quality-daily"></div>
+          </article>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-title"><h2>Где нужно дообучение</h2><span>тарифы и дистанции с высокой ошибкой</span></div>
+              <div id="qualityModels"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title"><h2>Последние сильные ошибки</h2><span>заказы для проверки</span></div>
+              <div id="qualityBad"></div>
+            </article>
+          </div>
+          <article class="panel">
+            <div class="panel-title"><h2>Установленные версии</h2></div>
+            <div id="versions"></div>
+          </article>
+          <article class="panel notice">
+            <h2>Что важно контролировать</h2>
+            <ul>
+              <li>Среднюю ошибку прогноза цены</li>
+              <li>Долю активных подписок и выручку</li>
+              <li>Заявки на вывод реферального дохода</li>
+              <li>Устаревшие версии приложения</li>
+              <li>Жалобы и нарушения в чате водителей</li>
+            </ul>
+          </article>
+        </section>
+
+        <section id="cabinet" class="page">
+          <div class="cabinet-hero">
+            <div><h2>Кабинет администратора</h2><p>Доступен только владельцу. Здесь можно добавить менеджера, выбрать разделы и сменить пароль.</p></div>
+            <span id="cabinetRoleBadge">Владелец</span>
+          </div>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-title"><h2>Добавить / изменить менеджера</h2><span>логин, пароль и права</span></div>
+              <input id="cabinetAdminId" type="hidden" />
+              <div class="cabinet-form">
+                <label class="form-field">Email<input id="cabinetEmail" placeholder="manager@example.ru" /></label>
+                <label class="form-field">Логин<input id="cabinetLogin" placeholder="manager" /></label>
+                <label class="form-field">Новый пароль<input id="cabinetPassword" type="password" placeholder="оставьте пустым, если не менять" /></label>
+                <label class="form-field">Роль<select id="cabinetRole"><option value="manager">Менеджер</option><option value="owner">Владелец</option></select></label>
+                <label class="check-field"><input id="cabinetActive" type="checkbox" checked /> Активен</label>
+              </div>
+              <div class="cabinet-section-grid" id="cabinetSections"></div>
+              <div class="form-actions"><button class="primary" id="cabinetSave">Сохранить пользователя</button><button class="ghost" id="cabinetReset">Очистить</button></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title"><h2>Смена моего пароля</h2><span>используйте сложный пароль</span></div>
+              <label class="form-field">Новый пароль<input id="cabinetMyPassword" type="password" placeholder="минимум 6 символов" /></label>
+              <button class="primary" id="cabinetMyPasswordSave">Сменить мой пароль</button>
+              <div class="cabinet-note">Менеджер не видит этот раздел. Если нужно восстановить доступ, обратитесь к владельцу.</div>
+            </article>
+          </div>
+          <article class="panel">
+            <div class="panel-title"><h2>Пользователи админки</h2><span id="cabinetCount">0</span></div>
+            <div id="cabinetUsers" class="cabinet-users"></div>
+          </article>
+        </section>
+              </main>
+    </div>
+    <div id="partnerPreviewModal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-preview></div>
+      <article class="ad-preview-modal">
+        <button class="modal-close" data-close-preview>×</button>
+        <div class="preview-heading">
+          <b>Предпросмотр в приложении</b
+          ><span>Карточка ещё не опубликована</span>
+        </div>
+        <div id="partnerPreviewCarousel" class="preview-carousel"></div>
+      </article>
+    </div>
+    <div id="driverModal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-driver></div>
+      <article class="driver-profile">
+        <button class="modal-close" data-close-driver>×</button>
+        <div id="driverProfileContent"></div>
+      </article>
+    </div>
+    <div id="toast"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js?v=20260716-live-access-nocache"></script>
+  </body>
+</html>
