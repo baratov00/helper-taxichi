@@ -574,6 +574,17 @@
         <section id="system" class="page">
           <div class="metrics mini" id="systemMetrics"></div>
           <article class="panel">
+            <div class="panel-title"><h2>Прогнозы цены</h2><span>сводка за день, неделю и месяц</span></div>
+            <div id="predictionSummary" class="quality-daily"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-title">
+              <h2>Последние 10 прогнозов</h2>
+              <button id="showAllPredictions" class="ghost">Открыть все прогнозы</button>
+            </div>
+            <div id="recentPredictions" class="prediction-list"></div>
+          </article>
+          <article class="panel">
             <div class="panel-title"><h2>Качество прогноза по дням</h2><span>ошибка, точность и оценка каждый день</span></div>
             <div id="qualityDaily" class="quality-daily"></div>
           </article>
@@ -654,9 +665,17 @@
         <div id="driverProfileContent"></div>
       </article>
     </div>
+    <div id="predictionsModal" class="modal" hidden>
+      <div class="modal-backdrop" data-close-predictions></div>
+      <article class="driver-profile wide-modal">
+        <button class="modal-close" data-close-predictions>×</button>
+        <div class="panel-title"><h2>Все прогнозы за 30 дней</h2><span id="allPredictionsCount"></span></div>
+        <div id="allPredictions" class="prediction-list"></div>
+      </article>
+    </div>
     <div id="toast"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="config.js?v=20260717-login-fix"></script>
-    <script src="app.js?v=20260717-login-fix"></script>
+    <script src="config.js?v=20260717-predictions-1"></script>
+    <script src="app.js?v=20260717-predictions-1"></script>
   </body>
 </html>
