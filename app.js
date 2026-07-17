@@ -1,6 +1,6 @@
 ﻿const cfg=window.TAXICHI_CONFIG,$=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)];let DATA=null,MAP=null,MARKERS=[],CURRENT_DRIVER=null;
 const titles={overview:'Обзор',users:'Водители',map:'Карта водителей',subscriptions:'Подписки и выплаты',referrals:'Реферальная программа',leaderboard:'ТОП водителей',chat:'Чат водителей',newsletter:'Рассылка',partners:'Реклама и партнёры',system:'Система'};
-$('#loginButton').onclick=()=>load($('#token')?.value.trim());$('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));$('#logout').onclick=()=>{sessionStorage.clear();location.reload()};$('#menu').onclick=()=>$('#app').classList.toggle('menu-open');
+$('#loginButton').onclick=adminPasswordLogin;$('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));$('#logout').onclick=()=>{sessionStorage.clear();location.reload()};$('#menu').onclick=()=>$('#app').classList.toggle('menu-open');
 all('.nav').forEach(b=>b.onclick=()=>page(b.dataset.page));all('.link-page').forEach(b=>b.onclick=()=>page(b.dataset.target));$('#userSearch').oninput=renderUsers;$('#userCity').onchange=renderUsers;$('#subscriptionCity').onchange=()=>renderSubscriptions();
 if($('#token'))$('#token').onkeydown=e=>{if(e.key==='Enter')$('#loginButton').click()};
 $('#subscriptionPeriod').onchange=()=>{if($('#subscriptionPeriod').value!=='custom'){$('#subscriptionFrom').value='';$('#subscriptionTo').value='';renderSubscriptions()}};
@@ -12,8 +12,28 @@ $('#newsSend').onclick=async()=>{const title=$('#newsTitle').value.trim(),messag
 document.addEventListener('click',event=>{const driver=event.target.closest('[data-driver]');if(driver)openDriver(driver.dataset.driver);if(event.target.closest('[data-close-driver]'))$('#driverModal').hidden=true;if(event.target.closest('[data-close-preview]'))$('#partnerPreviewModal').hidden=true});
 document.addEventListener('change',event=>{if(event.target.id==='driverOrderFilter')renderDriverOrders(event.target.value)});
 function page(id){all('.page').forEach(x=>x.classList.toggle('active-page',x.id===id));all('.nav').forEach(x=>x.classList.toggle('active',x.dataset.page===id));$('#pageTitle').textContent=titles[id];$('#app').classList.remove('menu-open');if(id==='map')setTimeout(()=>{MAP?.invalidateSize();renderMap()},80);if(id==='newsletter')loadNewsHistory();if(id==='leaderboard')loadContestHistory()}
-async function request(method='GET',body){const token=sessionStorage.getItem('taxichi_admin_token')||$('#token')?.value.trim();const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method,headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!response.ok)throw new Error(response.status===401?'Неверный логин или пароль':'Ошибка сервера');return response.json()}
+async function request(method='GET',body){const token=sessionStorage.getItem('taxichi_admin_token')||'';const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method,headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!response.ok)throw new Error(response.status===401?'Почта или пароль неверны':'Ошибка сервера');return response.json()}
 async function load(token){if(!token)return $('#loginError').textContent='Введите логин и пароль';try{sessionStorage.setItem('taxichi_admin_token',token);DATA=await request();$('#login').hidden=true;$('#app').hidden=false;$('#updated').textContent=`Обновлено ${new Date(DATA.generated_at).toLocaleTimeString('ru-RU')}`;render()}catch(err){$('#login').hidden=false;$('#app').hidden=true;$('#loginError').textContent=err.message}}
+async function adminPasswordLogin(){
+  const login=$('#adminLogin')?.value.trim(),password=$('#adminPassword')?.value;
+  $('#loginError').textContent='';
+  if(!login||!password){$('#loginError').textContent='Введите почту/логин и пароль';return}
+  try{
+    const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin_login',login,password})});
+    if(!response.ok){
+      let error='';
+      try{error=(await response.json()).error||''}catch(_){}
+      throw new Error(response.status===401||error==='bad_login'?'Почта или пароль неверны':'Ошибка входа. Попробуйте ещё раз');
+    }
+    const data=await response.json();
+    ADMIN=data.admin;
+    sessionStorage.setItem('taxichi_admin_token',data.token);
+    await load(data.token);
+  }catch(err){
+    $('#login').hidden=false;$('#app').hidden=true;
+    $('#loginError').textContent=err.message||'Ошибка входа. Попробуйте ещё раз';
+  }
+}
 function render(){const d=DATA;renderCityFilters();$('#metrics').innerHTML=[metric('Водителей',d.drivers_total,'Всего аккаунтов','dark'),metric('Онлайн сейчас',d.online,'активность до 2 минут','yellow'),metric('Купили Premium',d.prime_buys,`${d.active_subscriptions} активных`),metric('Выручка',rub(d.revenue_rub),'за всё время'),metric('Активны сегодня',d.active_day,'уникальных'),metric('Активны за неделю',d.active_week,'уникальных'),metric('Активны за месяц',d.active_month,'уникальных'),metric('Заявки на вывод',d.pending_withdrawals,'ожидают обработки')].join('');
 $('#activity').innerHTML=[['Сегодня',d.active_day],['7 дней',d.active_week],['30 дней',d.active_month]].map(x=>`<div><b>${num(x[1])}</b><span>${x[0]}</span></div>`).join('');$('#recentMini').innerHTML=(d.recent_users||[]).slice(0,5).map(userRow).join('')||empty('Нет пользователей');$('#topMini').innerHTML=(d.leaderboard||[]).slice(0,5).map((x,i)=>`<div class="mini-row"><div class="avatar">${i+1}</div><div class="grow"><b>${e(x.nickname)}</b><span>${x.completed_orders} заказов</span></div><div class="money">${rub(x.points)}</div></div>`).join('')||empty('Рейтинг пока пуст');renderVersions('#versionMini');renderUsers();renderSubscriptions();renderPaymentSettings();renderReferrals();renderLeaderboard();renderChat();renderPartners();renderSystem();if($('#map').classList.contains('active-page'))renderMap()}
 function metric(label,value,note,cls=''){return `<article class="metric ${cls}"><small>${label}</small><strong>${value}</strong><em>${note}</em></article>`}
@@ -309,15 +329,7 @@ const basePage=page;
 page=function(id){if(!canSection(id)){toast('Нет доступа к этому разделу');id=firstAllowed()}basePage(id);if(id==='cabinet')renderCabinet()}
 const baseRender=render;
 render=function(){baseRender();ADMIN=DATA?.admin_current||ADMIN;applyAdminPermissions();renderCabinet();wireAccessButtons()}
-$('#loginButton').onclick=async()=>{
-  const login=$('#adminLogin')?.value.trim(),password=$('#adminPassword')?.value;
-  if(!login||!password){$('#loginError').textContent='Введите логин и пароль';return}
-  try{
-    const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin_login',login,password})});
-    if(!response.ok)throw new Error(response.status===401?'Неверный логин или пароль':'Ошибка входа');
-    const data=await response.json();ADMIN=data.admin;sessionStorage.setItem('taxichi_admin_token',data.token);await load(data.token);
-  }catch(err){$('#loginError').textContent=err.message}
-};
+$('#loginButton').onclick=adminPasswordLogin;
 $('#adminPassword')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
 $('#adminLogin')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginButton').click()});
 $('#resetPasswordButton')&&($('#resetPasswordButton').onclick=()=>{$('#loginError').textContent='Для сброса пароля обратитесь к владельцу или смените пароль в Кабинете.'});
