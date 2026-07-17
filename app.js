@@ -1,4 +1,6 @@
 ﻿const cfg=window.TAXICHI_CONFIG,$=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)];let DATA=null,MAP=null,MARKERS=[],CURRENT_DRIVER=null;
+const TAXICHI_ADMIN_BUILD='20260717-predictions-1';
+if(localStorage.getItem('taxichi_admin_build')!==TAXICHI_ADMIN_BUILD){localStorage.setItem('taxichi_admin_build',TAXICHI_ADMIN_BUILD);if('caches'in window)caches.keys().then(keys=>keys.forEach(key=>caches.delete(key))).catch(()=>{});}
 const titles={overview:'Обзор',users:'Водители',map:'Карта водителей',subscriptions:'Подписки и выплаты',referrals:'Реферальная программа',leaderboard:'ТОП водителей',chat:'Чат водителей',newsletter:'Рассылка',partners:'Реклама и партнёры',system:'Система'};
 $('#loginButton').onclick=adminPasswordLogin;$('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));$('#logout').onclick=()=>{sessionStorage.clear();location.reload()};$('#menu').onclick=()=>$('#app').classList.toggle('menu-open');
 all('.nav').forEach(b=>b.onclick=()=>page(b.dataset.page));all('.link-page').forEach(b=>b.onclick=()=>page(b.dataset.target));$('#userSearch').oninput=renderUsers;$('#userCity').onchange=renderUsers;$('#subscriptionCity').onchange=()=>renderSubscriptions();
@@ -450,7 +452,7 @@ function renderQualityPanels(){
     <div><span>${e(x.date)}</span><b>${safePercent(x.accuracy_percent)}</b><small>точность по завершённым</small></div>
     <i class="quality-grade ${qualityGradeClass(x.grade,x.avg_error_percent)}">${e(x.grade)}</i>
     <em>ошибка ${safePercent(x.avg_error_percent)} · проверено ${num(x.samples)} заказов</em>
-  </div>`).join(''):empty('Пока нет завершённых заказов с фактической ценой. Точность появится после факта.'));
+  </div>`).join(''):empty('Пока нет завершённых заказов с фактической ценой. Точность появится после факта.');
   if(modelsBox)modelsBox.innerHTML=models.length?models.map(x=>`<div class="quality-row">
     <i class="quality-grade ${qualityGradeClass(x.grade,x.avg_error_percent)}">${e(x.grade)}</i>
     <div class="grow"><b>${e(x.model)}</b><span>ошибка ${safePercent(x.avg_error_percent)} · точность ${safePercent(x.accuracy_percent)} · ${num(x.samples)} заказов</span><small>${e(x.recommendation||'Нужно больше завершённых заказов с фактической ценой')}</small></div>
@@ -460,6 +462,51 @@ function renderQualityPanels(){
     <div class="grow"><b>${e(x.tariff||'тариф')} · ${safeKm(x.distance_km)}</b><span>прогноз ${safeRub(x.predicted_price)} · факт ${safeRub(x.actual_price)}</span><small>${e(x.pickup_address||'адрес не сохранён')} · ${date(x.completed_at||x.created_at)}</small></div>
   </div>`).join(''):empty('Сильных ошибок за 30 дней нет');
 }
+function predictionErrorClass(value){
+  if(value===null||value===undefined)return'';
+  if(Number(value)<=12)return'prediction-ok';
+  if(Number(value)<=25)return'prediction-warn';
+  return'prediction-bad';
+}
+function predictionRow(x){
+  const err=x.error_percent===null||x.error_percent===undefined?'—':`${num(x.error_percent)}%`;
+  const fact=Number(x.actual_price||0)>0?rub(x.actual_price):'ждём факт';
+  const minutes=Number(x.duration_minutes||0);
+  const time=minutes>=60?`${Math.floor(minutes/60)}ч ${minutes%60}м`:`${minutes} мин`;
+  return `<div class="prediction-row">
+    <div><b>${e(x.driver_name||'Водитель')}</b><span>${date(x.created_at)} · ${e(x.status==='completed'?'завершён':'прогноз')}</span></div>
+    <div><b>${e(x.tariff||'—')}</b><span>тариф</span></div>
+    <div><b>×${Number(x.coefficient||1).toFixed(2).replace('.',',')}</b><span>кэф</span></div>
+    <div><b>${Number(x.distance_km||0).toFixed(1).replace('.',',')} км</b><span>${e(time)}</span></div>
+    <div><b class="prediction-price">${rub(x.predicted_price)}</b><span>прогноз</span></div>
+    <div><b>${fact}</b><span>факт</span></div>
+    <div><b class="${predictionErrorClass(x.error_percent)}">${err}</b><span>${e(x.pickup_address||'адрес не сохранён')}</span></div>
+  </div>`;
+}
+function renderPredictions(){
+  const summary=DATA.prediction_summary||{};
+  const summaryBox=$('#predictionSummary');
+  if(summaryBox){
+    const items=[summary.today,summary.week,summary.month].filter(Boolean);
+    summaryBox.innerHTML=items.length?items.map(x=>`<div class="quality-card">
+      <div><span>${e(x.label)}</span><b>${x.accuracy_percent===null?'—':`${num(x.accuracy_percent)}%`}</b><small>точность</small></div>
+      <i class="quality-grade ${qualityGradeClass('',x.avg_error_percent)}">${x.completed?num(x.completed):'0'}</i>
+      <em>прогнозов ${num(x.total)} · с фактом ${num(x.completed)} · ошибка ${x.completed?`${num(x.avg_error_percent)}%`:'—'}</em>
+    </div>`).join(''):empty('Прогнозов пока нет');
+  }
+  const recent=DATA.recent_predictions||[];
+  const recentBox=$('#recentPredictions');
+  if(recentBox)recentBox.innerHTML=recent.length?recent.map(predictionRow).join(''):empty('Прогнозов пока нет');
+  const btn=$('#showAllPredictions');
+  if(btn)btn.onclick=()=>openPredictionsModal();
+}
+function openPredictionsModal(){
+  const rows=DATA.fare_predictions_all||DATA.recent_predictions||[];
+  $('#allPredictionsCount').textContent=`${num(rows.length)} записей`;
+  $('#allPredictions').innerHTML=rows.length?rows.map(predictionRow).join(''):empty('Прогнозов пока нет');
+  $('#predictionsModal').hidden=false;
+}
+document.addEventListener('click',ev=>{if(ev.target?.matches?.('[data-close-predictions]'))$('#predictionsModal').hidden=true});
 renderSystem=function(){
   const d=DATA;
   $('#systemMetrics').innerHTML=[
@@ -468,6 +515,7 @@ renderSystem=function(){
     metric('Точность',`${d.prediction_accuracy_percent??Math.max(0,100-(d.prediction_error_percent||0))}%`,'после завершённых заказов'),
     metric('Сервер','Онлайн','данные обновляются')
   ].join('');
+  renderPredictions();
   renderQualityPanels();
   renderVersions('#versions');
   if(typeof renderSupportSettings==='function')renderSupportSettings();
