@@ -2,15 +2,15 @@
 const TAXICHI_ADMIN_BUILD='20260717-predictions-1';
 if(localStorage.getItem('taxichi_admin_build')!==TAXICHI_ADMIN_BUILD){localStorage.setItem('taxichi_admin_build',TAXICHI_ADMIN_BUILD);if('caches'in window)caches.keys().then(keys=>keys.forEach(key=>caches.delete(key))).catch(()=>{});}
 const titles={overview:'Обзор',users:'Водители',map:'Карта водителей',subscriptions:'Подписки и выплаты',referrals:'Реферальная программа',leaderboard:'ТОП водителей',chat:'Чат водителей',newsletter:'Рассылка',partners:'Реклама и партнёры',system:'Система'};
-$('#loginButton').onclick=adminPasswordLogin;$('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token'));$('#logout').onclick=()=>{sessionStorage.clear();location.reload()};$('#menu').onclick=()=>$('#app').classList.toggle('menu-open');
-all('.nav').forEach(b=>b.onclick=()=>page(b.dataset.page));all('.link-page').forEach(b=>b.onclick=()=>page(b.dataset.target));$('#userSearch').oninput=renderUsers;$('#userCity').onchange=renderUsers;$('#subscriptionCity').onchange=()=>renderSubscriptions();
+$('#loginButton')&&($('#loginButton').onclick=adminPasswordLogin);$('#refresh')&&($('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token')));$('#logout')&&($('#logout').onclick=()=>{sessionStorage.clear();location.reload()});$('#menu')&&($('#menu').onclick=()=>$('#app')?.classList.toggle('menu-open'));
+all('.nav').forEach(b=>b.onclick=()=>page(b.dataset.page));all('.link-page').forEach(b=>b.onclick=()=>page(b.dataset.target));$('#userSearch')&&($('#userSearch').oninput=renderUsers);$('#userCity')&&($('#userCity').onchange=renderUsers);$('#subscriptionCity')&&($('#subscriptionCity').onchange=()=>renderSubscriptions());
 if($('#token'))$('#token').onkeydown=e=>{if(e.key==='Enter')$('#loginButton').click()};
-$('#subscriptionPeriod').onchange=()=>{if($('#subscriptionPeriod').value!=='custom'){$('#subscriptionFrom').value='';$('#subscriptionTo').value='';renderSubscriptions()}};
-$('#applySubscriptionDates').onclick=()=>renderSubscriptions(true);
-$('#partnerSave').onclick=savePartner;$('#partnerReset').onclick=resetPartnerForm;$('#partnerPreview').onclick=previewPartner;
-$('#contestSave').onclick=saveContest;
-['contestTitle','contestStart','contestEnd','contestPrize1','contestPrize2','contestPrize3','contestActive','contestCity'].forEach(id=>$('#'+id).addEventListener('input',updateContestPreview));all('.contestTariff').forEach(x=>x.addEventListener('change',updateContestPreview));
-$('#newsSend').onclick=async()=>{const title=$('#newsTitle').value.trim(),message=$('#newsMessage').value.trim();if(!title||!message)return toast('Заполните заголовок и сообщение');await action({action:'news_send',title,message,city:$('#newsCity').value});$('#newsTitle').value='';$('#newsMessage').value='';await loadNewsHistory()};
+$('#subscriptionPeriod')&&($('#subscriptionPeriod').onchange=()=>{if($('#subscriptionPeriod').value!=='custom'){$('#subscriptionFrom').value='';$('#subscriptionTo').value='';renderSubscriptions()}});
+$('#applySubscriptionDates')&&($('#applySubscriptionDates').onclick=()=>renderSubscriptions(true));
+$('#partnerSave')&&($('#partnerSave').onclick=savePartner);$('#partnerReset')&&($('#partnerReset').onclick=resetPartnerForm);$('#partnerPreview')&&($('#partnerPreview').onclick=previewPartner);
+$('#contestSave')&&($('#contestSave').onclick=saveContest);
+['contestTitle','contestStart','contestEnd','contestPrize1','contestPrize2','contestPrize3','contestActive','contestCity'].forEach(id=>$('#'+id)?.addEventListener('input',updateContestPreview));all('.contestTariff').forEach(x=>x.addEventListener('change',updateContestPreview));
+$('#newsSend')&&($('#newsSend').onclick=async()=>{const title=$('#newsTitle').value.trim(),message=$('#newsMessage').value.trim();if(!title||!message)return toast('Заполните заголовок и сообщение');await action({action:'news_send',title,message,city:$('#newsCity').value});$('#newsTitle').value='';$('#newsMessage').value='';await loadNewsHistory()});
 document.addEventListener('click',event=>{const driver=event.target.closest('[data-driver]');if(driver)openDriver(driver.dataset.driver);if(event.target.closest('[data-close-driver]'))$('#driverModal').hidden=true;if(event.target.closest('[data-close-preview]'))$('#partnerPreviewModal').hidden=true});
 document.addEventListener('change',event=>{if(event.target.id==='driverOrderFilter')renderDriverOrders(event.target.value)});
 function page(id){all('.page').forEach(x=>x.classList.toggle('active-page',x.id===id));all('.nav').forEach(x=>x.classList.toggle('active',x.dataset.page===id));$('#pageTitle').textContent=titles[id];$('#app').classList.remove('menu-open');if(id==='map')setTimeout(()=>{MAP?.invalidateSize();renderMap()},80);if(id==='newsletter')loadNewsHistory();if(id==='leaderboard')loadContestHistory()}
@@ -18,9 +18,11 @@ async function request(method='GET',body){const token=sessionStorage.getItem('ta
 async function load(token){if(!token)return $('#loginError').textContent='Введите логин и пароль';try{sessionStorage.setItem('taxichi_admin_token',token);DATA=await request();$('#login').hidden=true;$('#app').hidden=false;$('#updated').textContent=`Обновлено ${new Date(DATA.generated_at).toLocaleTimeString('ru-RU')}`;render()}catch(err){$('#login').hidden=false;$('#app').hidden=true;$('#loginError').textContent=err.message}}
 async function adminPasswordLogin(){
   const login=$('#adminLogin')?.value.trim(),password=$('#adminPassword')?.value;
+  const btn=$('#loginButton'),old=btn?.textContent||'Войти';
   $('#loginError').textContent='';
   if(!login||!password){$('#loginError').textContent='Введите почту/логин и пароль';return}
   try{
+    if(btn){btn.disabled=true;btn.textContent='Проверяем…'}
     const response=await fetch(`${cfg.supabaseUrl}/functions/v1/admin-stats`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'admin_login',login,password})});
     if(!response.ok){
       let error='';
@@ -34,6 +36,8 @@ async function adminPasswordLogin(){
   }catch(err){
     $('#login').hidden=false;$('#app').hidden=true;
     $('#loginError').textContent=err.message||'Ошибка входа. Попробуйте ещё раз';
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=old}
   }
 }
 function render(){const d=DATA;renderCityFilters();$('#metrics').innerHTML=[metric('Водителей',d.drivers_total,'Всего аккаунтов','dark'),metric('Онлайн сейчас',d.online,'активность до 2 минут','yellow'),metric('Купили Premium',d.prime_buys,`${d.active_subscriptions} активных`),metric('Выручка',rub(d.revenue_rub),'за всё время'),metric('Активны сегодня',d.active_day,'уникальных'),metric('Активны за неделю',d.active_week,'уникальных'),metric('Активны за месяц',d.active_month,'уникальных'),metric('Заявки на вывод',d.pending_withdrawals,'ожидают обработки')].join('');
