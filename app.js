@@ -1,5 +1,5 @@
 ﻿const cfg=window.TAXICHI_CONFIG,$=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)];let DATA=null,MAP=null,MARKERS=[],CURRENT_DRIVER=null;
-const TAXICHI_ADMIN_BUILD='20260717-predictions-1';
+const TAXICHI_ADMIN_BUILD='20260718-history-completed-only';
 if(localStorage.getItem('taxichi_admin_build')!==TAXICHI_ADMIN_BUILD){localStorage.setItem('taxichi_admin_build',TAXICHI_ADMIN_BUILD);if('caches'in window)caches.keys().then(keys=>keys.forEach(key=>caches.delete(key))).catch(()=>{});}
 const titles={overview:'Обзор',users:'Водители',map:'Карта водителей',subscriptions:'Подписки и выплаты',referrals:'Реферальная программа',leaderboard:'ТОП водителей',chat:'Чат водителей',newsletter:'Рассылка',partners:'Реклама и партнёры',system:'Система'};
 $('#loginButton')&&($('#loginButton').onclick=adminPasswordLogin);$('#refresh')&&($('#refresh').onclick=()=>load(sessionStorage.getItem('taxichi_admin_token')));$('#logout')&&($('#logout').onclick=()=>{sessionStorage.clear();location.reload()});$('#menu')&&($('#menu').onclick=()=>$('#app')?.classList.toggle('menu-open'));
